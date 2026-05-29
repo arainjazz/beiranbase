@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>北然生态基地 | Ecological Academy &amp; Symbiotic Farm</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Inter:wght@400;500&amp;family=Public+Sans:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .archival-border {
+            border: 1px solid #c3c6d5;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#6d5e00",
+                        "on-surface-variant": "#434653",
+                        "on-background": "#1b1c1d",
+                        "surface": "#faf9fa",
+                        "secondary-container": "#dfe3e8",
+                        "on-tertiary-container": "#4a3f00",
+                        "on-primary-fixed": "#001946",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#c2c7cc",
+                        "inverse-primary": "#b1c5ff",
+                        "on-tertiary-fixed": "#211b00",
+                        "inverse-on-surface": "#f2f0f1",
+                        "primary-fixed-dim": "#b1c5ff",
+                        "outline-variant": "#c3c6d5",
+                        "on-secondary-fixed-variant": "#42474b",
+                        "secondary-fixed": "#dfe3e8",
+                        "primary": "#094cb2",
+                        "surface-container-highest": "#e3e2e3",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "background": "#faf9fa",
+                        "inverse-surface": "#303031",
+                        "surface-container-high": "#e9e8e9",
+                        "surface-tint": "#2259bf",
+                        "surface-bright": "#faf9fa",
+                        "primary-container": "#3366cc",
+                        "on-surface": "#1b1c1d",
+                        "primary-fixed": "#d9e2ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#dcc661",
+                        "tertiary-fixed": "#f9e37a",
+                        "surface-dim": "#dbdadb",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#efedee",
+                        "on-tertiary-fixed-variant": "#524600",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#bfab49",
+                        "outline": "#737784",
+                        "on-secondary-fixed": "#171c20",
+                        "on-secondary-container": "#606569",
+                        "on-primary-fixed-variant": "#00419d",
+                        "surface-variant": "#e3e2e3",
+                        "surface-container-low": "#f5f3f4",
+                        "on-primary-container": "#e7ebff",
+                        "secondary": "#5a5f63"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "display": ["Noto Serif"],
+                        "body": ["Inter"],
+                        "label": ["Public Sans"]
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-max": "1200px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body antialiased">
+<!-- Top Navigation Bar -->
+<header class="bg-surface/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-outline-variant">
+<nav class="flex justify-between items-center w-full px-6 md:px-margin-desktop max-w-container-max mx-auto h-20">
+<div class="flex items-center gap-12">
+<a class="font-display text-2xl font-bold text-primary tracking-tight" href="#">北然生态基地</a>
+<div class="hidden md:flex gap-8">
+<a class="font-label text-sm text-primary border-b-2 border-primary pb-1" href="#">首页</a>
+<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">物种发现</a>
+<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">自然课程</a>
+<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">生态农法</a>
+<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">生态礼品</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container rounded-full">search</button>
+<button class="bg-primary text-on-primary font-label text-sm px-6 py-3 rounded-xl hover:bg-primary-container transition-all">立即报名</button>
+</div>
+</nav>
+</header>
+<!-- Hero Section -->
+<section class="relative h-screen min-h-[700px] flex items-center overflow-hidden pt-20">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="A sweeping, cinematic landscape of a lush, verdant sustainable farm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh0Ww_RO92BqVYp88eiGy2PNy7F9EIK345LVO0WWCycBLV-tdnfaoyBJtantP5Rcmj37QxCvU0uVMxjXWZqlh-Md7O4n7jFBznUAoysy81XZjGnfoPh9kyQYWf2wpqZtlHEvl5UFqbfX5i29rNE9T97vQOp0QySfTjZU3Tv2DgexOKqPSgO0qizxPuhYE5dtllRz9ApX_5--TmPxByOEswKbKXjbLCQB8Rwl2aPUUhsVmgOVCnJ0b3lVWoSLp23GGrvW7eEqp0h6Kv"/>
+<div class="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent"></div>
+</div>
+<div class="relative z-10 px-6 md:px-margin-desktop max-w-container-max mx-auto w-full">
+<div class="max-w-2xl text-white">
+<h1 class="font-display text-5xl md:text-6xl mb-6 leading-[1.1] font-bold">
+                揭秘自然奥秘，<br/>与大地共同生长。
+            </h1>
+<p class="font-body text-lg md:text-xl mb-10 opacity-90 max-w-lg leading-relaxed">
+                在北然生态基地，我们连接传统智慧与现代科学，通过沉浸式的农场体验，为您开启一段探索生命多样性与可持续生活的旅程。
+            </p>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary px-10 py-4 rounded-xl font-label text-sm flex items-center gap-2 hover:bg-primary-container transition-all">
+                    开始探索 <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="bg-white/10 backdrop-blur-md text-white border border-white/30 px-10 py-4 rounded-xl font-label text-sm hover:bg-white/20 transition-all">
+                    了解农场
+                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Navigation - Bento Style -->
+<section class="py-24 px-6 md:px-margin-desktop max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<a class="group relative h-72 overflow-hidden rounded-xl archival-border bg-surface-container-low p-10 flex flex-col justify-end transition-all hover:border-primary hover:shadow-lg" href="#">
+<div class="absolute top-10 right-10 text-primary/10 transition-transform group-hover:scale-110 group-hover:text-primary/20">
+<span class="material-symbols-outlined text-7xl">menu_book</span>
+</div>
+<h3 class="font-display text-2xl font-semibold text-primary mb-3">自然课程</h3>
+<p class="font-body text-on-surface-variant text-base">从土壤科学到野外考察的专业体系</p>
+</a>
+<a class="group relative h-72 overflow-hidden rounded-xl archival-border bg-surface-container-low p-10 flex flex-col justify-end transition-all hover:border-primary hover:shadow-lg" href="#">
+<div class="absolute top-10 right-10 text-primary/10 transition-transform group-hover:scale-110 group-hover:text-primary/20">
+<span class="material-symbols-outlined text-7xl">database</span>
+</div>
+<h3 class="font-display text-2xl font-semibold text-primary mb-3">物种百科</h3>
+<p class="font-body text-on-surface-variant text-base">农场与周边森林的生物多样性档案</p>
+</a>
+<a class="group relative h-72 overflow-hidden rounded-xl archival-border bg-surface-container-low p-10 flex flex-col justify-end transition-all hover:border-primary hover:shadow-lg" href="#">
+<div class="absolute top-10 right-10 text-primary/10 transition-transform group-hover:scale-110 group-hover:text-primary/20">
+<span class="material-symbols-outlined text-7xl">local_mall</span>
+</div>
+<h3 class="font-display text-2xl font-semibold text-primary mb-3">生态礼品</h3>
+<p class="font-body text-on-surface-variant text-base">分享当季有机的辛勤耕耘硕果</p>
+</a>
+</div>
+</section>
+<!-- Featured Courses -->
+<section class="py-24 bg-surface-container-lowest">
+<div class="px-6 md:px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+<div>
+<span class="font-label text-xs text-secondary tracking-[0.2em] uppercase mb-4 block">Education Programs</span>
+<h2 class="font-display text-4xl font-bold text-primary">精选自然课程</h2>
+</div>
+<a class="font-label text-sm text-primary flex items-center gap-2 hover:underline group" href="#">
+                查看所有课程 <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">north_east</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+<!-- Course 1 -->
+<div class="archival-border rounded-xl overflow-hidden group hover:shadow-xl transition-all bg-surface">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyTSHuZvn442uZ0gvHj-X1ppzZShP_aM86RXHeEo1VFN6hZ4TFF8yau3mlxhAHAPMRnB0fAmU1XfZkQuoBtF3T3pckdQFg9RQRvJzyWUvz0bi-Szv9zlYraNDfi3MaP1LuJYpieqiYupaBFx5bu0pFzJQ3ho_u9CRKVeXhs1NV4zfNpVZkC5ukzEsiCAtFXkhaoYOXtyEhClukg1bIGiPOuac5TO0fIwURcVi6B-NMycG9b8Q9EHy2cgo87E9l4r9ciY16ogcBshMB"/>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded-sm font-label text-[10px] uppercase tracking-wider">Soil Science</span>
+<span class="text-on-surface-variant font-label text-[10px]">8 WEEKS</span>
+</div>
+<h4 class="font-display text-xl font-bold text-primary mb-3">活体土壤：地下的生命网</h4>
+<p class="font-body text-on-surface-variant mb-8 text-sm leading-relaxed">深入研究微生物群落如何构建我们赖以生存的生态系统基础。</p>
+<button class="w-full py-3 archival-border rounded-xl font-label text-xs text-primary hover:bg-primary hover:text-white transition-all">立即报名</button>
+</div>
+</div>
+<!-- Course 2 -->
+<div class="archival-border rounded-xl overflow-hidden group hover:shadow-xl transition-all bg-surface">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR-IQFJDuFWqOjnGZo9hU9YmL4LaPiDx5zECVwTqH91OrjiWUnaGu6B2SjbmcXZS5Ko5qvFdrFoNUeMsIxmSZ8oIn-NmHO1SumehlcW3AXnGoyiR_kPt5Yu1vG8xlcE0uDbNjYhisckRB0XN7I7w9SLmogp29ucE5rzRgjXSR4dhKuPj3_Xooz1TZwMLe3mpPoQl_QyuTIJ39LGsWFA-mtKqHAs3DyoliILKcI3vNU9j75YiVDyyE0tX0_-_aczNkOiAc7AlwklFam"/>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-sm font-label text-[10px] uppercase tracking-wider">Ornithology</span>
+<span class="text-on-surface-variant font-label text-[10px]">WEEKEND</span>
+</div>
+<h4 class="font-display text-xl font-bold text-primary mb-3">林间之语：观鸟与行为学</h4>
+<p class="font-body text-on-surface-variant mb-8 text-sm leading-relaxed">在清晨的森林中学习辨识鸟鸣与行为，探索飞羽世界的奥秘。</p>
+<button class="w-full py-3 archival-border rounded-xl font-label text-xs text-primary hover:bg-primary hover:text-white transition-all">立即报名</button>
+</div>
+</div>
+<!-- Course 3 -->
+<div class="archival-border rounded-xl overflow-hidden group hover:shadow-xl transition-all bg-surface">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBARj8OdBiLIrHwc9Y8meG1l7GpOCqbwSb-oxAIElmADblcLdHzcYXuZyLU-C_niKlduONL9wEkk08M8NKAGkBq5yG3QqejtfnSmJs0JI7qMaDJYzYR0KL75BciFgakjRizYwMLrnwF0FQJoWXxrd38mF-2ZR2X31yiE43zBotc026fkBl2_pDHIR_3XhXkAAn-KpxMrUlQkUQPqHvlNBMAsAZKdjBJ8HMeVhWW_U-BqXBGqmMSm2CzylqYFkYOhYwdsLw2M4F8K257"/>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-secondary-fixed text-on-secondary-fixed px-3 py-1 rounded-sm font-label text-[10px] uppercase tracking-wider">Permaculture</span>
+<span class="text-on-surface-variant font-label text-[10px]">12 MONTHS</span>
+</div>
+<h4 class="font-display text-xl font-bold text-primary mb-3">共生农法：永续设计的艺术</h4>
+<p class="font-body text-on-surface-variant mb-8 text-sm leading-relaxed">从理论到实践，全面掌握如何设计并管理一个自给自足的生态系统。</p>
+<button class="w-full py-3 archival-border rounded-xl font-label text-xs text-primary hover:bg-primary hover:text-white transition-all">立即报名</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Our Farm Section -->
+<section class="py-24 px-6 md:px-margin-desktop max-w-container-max mx-auto overflow-hidden">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+<div class="relative">
+<div class="archival-border rounded-2xl overflow-hidden aspect-[4/5] relative z-10 shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="A wide-angle, breathtaking view of an integrated symbiotic farm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz80V-zRzzlw1PfOgmOZYdopKvKeiXo4vIzP1uFmVb0NfifiXy5YAbiRUdyGYGEGTc-4yjx0YOcJyxrPzge8DgRdDQZM8PIPsdmJt0vLss_Z5kysy4kNOaUE3HE3TGkjI-MBe2U60TqR-qYs-wKegNg_mpzbglxBva0FGNNRlIVHzaj7HC06yqNEP8s-_drjTpokFWtds86AH92WaYRuWD7zW-6SzmK8_RIYho0wGrQ_a_SE8RdIEr49yKiVGQreeumMxUpvIZZDcb"/>
+</div>
+<div class="absolute -bottom-12 -right-12 w-80 h-80 bg-primary/5 rounded-full -z-0 blur-3xl"></div>
+</div>
+<div class="space-y-10">
+<div>
+<span class="font-label text-xs text-secondary tracking-[0.2em] uppercase mb-4 block">The Symbiotic Way</span>
+<h2 class="font-display text-4xl md:text-5xl font-bold text-primary leading-tight">共生农场：<br/>不仅是产出，更是循环。</h2>
+</div>
+<p class="font-body text-lg text-on-surface-variant leading-relaxed">
+                我们摒弃化学干预，模拟森林生态系统。通过作物间作、禽畜共生与水源循环，我们的农场在产出有机丰收的同时，也在不断修复受损的土地。
+            </p>
+<div class="grid grid-cols-2 gap-12">
+<div class="border-l-2 border-primary/20 pl-8">
+<div class="text-4xl font-bold text-primary mb-2">100%</div>
+<p class="font-label text-xs text-on-surface-variant uppercase tracking-widest">有机肥料循环</p>
+</div>
+<div class="border-l-2 border-primary/20 pl-8">
+<div class="text-4xl font-bold text-primary mb-2">450+</div>
+<p class="font-label text-xs text-on-surface-variant uppercase tracking-widest">记录在册物种</p>
+</div>
+</div>
+<button class="bg-secondary text-on-secondary px-10 py-5 rounded-xl font-label text-sm hover:opacity-90 transition-all shadow-md">
+                探索可持续实践
+            </button>
+</div>
+</div>
+</section>
+<!-- Species Spotlight - Horizontal Scroll Effect -->
+<section class="py-24 bg-surface-container">
+<div class="px-6 md:px-margin-desktop max-w-container-max mx-auto mb-16">
+<h2 class="font-display text-4xl font-bold text-primary text-center">物种聚光灯</h2>
+<p class="font-body text-on-surface-variant text-center mt-4">在这里，每一个生命都值得被记录。</p>
+</div>
+<div class="flex overflow-x-auto gap-8 px-6 md:px-margin-desktop pb-12 hide-scrollbar snap-x">
+<!-- Species items -->
+<div class="flex-none w-80 snap-start">
+<div class="bg-surface rounded-xl archival-border p-5 transition-all hover:-translate-y-2 hover:shadow-xl">
+<img class="w-full h-56 object-cover rounded-sm mb-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMfDAkKm-ted0JS-2OKukjbidzGn8L4WyGNqBc3zmJQWQxtSWnC2oiYN_ipaM_1_hVyfSeye_ewEjrdfrcblEMlBk1dTXU2G1Ar8-MucGuc80E0DnYmrNicQP11-JgJLG5ktAmsMJMwesOVdZjnOkRAEtaow9fO3I2G_N9Y_yBnhbnZO_62YcS6D6wrMB3uJzb6kK7qdFKXSVyuXx0pLGtP_8X1gsjx1CdGC2GWTygyNEOGYB6fdqxlWbN63HpZNFJ31DAqRU455Tl"/>
+<span class="font-label text-[10px] text-secondary uppercase tracking-[0.2em]">Flora</span>
+<h5 class="font-display text-xl font-bold text-primary mt-1">野生金银花</h5>
+<p class="text-[12px] font-body text-on-surface-variant mt-2 italic">Lonicera japonica</p>
+</div>
+</div>
+<div class="flex-none w-80 snap-start">
+<div class="bg-surface rounded-xl archival-border p-5 transition-all hover:-translate-y-2 hover:shadow-xl">
+<img class="w-full h-56 object-cover rounded-sm mb-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZbHyUkcwMb_gF3zHYqxjTKw8nTn9yoZLUa-UDZhQ8rhmRVxlaj6QACRd0-03hVkHsFLi77QHdrQTDb-oaloHahXHwEOpYDS7bK6X3CtKYqo9qv7dONLXWVQsGh6KBGku4_mDdeE0HXcp5f4VqY9yL2JTEtjJx_ja_J2-GrlSRsXSnl8trh6a1Yvluvsnjr-kvVWd4zUT-PG054nraXBoAm3_I0jFItv65V0L7FF2XvfYXBGXCZiU1_HOHZwk6Bp2vJn-zRnJ_nvli"/>
+<span class="font-label text-[10px] text-secondary uppercase tracking-[0.2em]">Fauna</span>
+<h5 class="font-display text-xl font-bold text-primary mt-1">大草蛉</h5>
+<p class="text-[12px] font-body text-on-surface-variant mt-2 italic">Chrysopa pallens</p>
+</div>
+</div>
+<div class="flex-none w-80 snap-start">
+<div class="bg-surface rounded-xl archival-border p-5 transition-all hover:-translate-y-2 hover:shadow-xl">
+<img class="w-full h-56 object-cover rounded-sm mb-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpUqZXrkeejOp-2lmtxHTIbh4rb1m7m6X5AeS9GjnkqfcgdocH3bZMHBgXyPPsQGUTkUkdMjuZiu3M1vkqADsGoa_4i3BMv3nsIrQp4aZXg2d6y5iTstlP-ys_rt_fqBKnmJsDoW3R6Sju8DV97UtdfySL9HxMiaskZGbWsj7YALyVhwMUiVdtJKYdja6FZB83dqllabyYj8Scy8VhMwZWigTgdzgujEHhgpvwM07QaBvGFHQovqOlC2I4YJsiIVfQoLthDddzePRH"/>
+<span class="font-label text-[10px] text-secondary uppercase tracking-[0.2em]">Fungi</span>
+<h5 class="font-display text-xl font-bold text-primary mt-1">红菇</h5>
+<p class="text-[12px] font-body text-on-surface-variant mt-2 italic">Russula vinosa</p>
+</div>
+</div>
+<div class="flex-none w-80 snap-start">
+<div class="bg-surface rounded-xl archival-border p-5 transition-all hover:-translate-y-2 hover:shadow-xl">
+<img class="w-full h-56 object-cover rounded-sm mb-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDU0OvPtjmkdevGoEccb169wTS6nKZxPZ_tK2G-goQcH6p8u5axL0QAmcPilAiGwgnU23cDk0Jfbkw1mlVtavmvO79f75SWp9RoW8lRqc9OgWnqCQzgCvXrL45eVWOsLskNtLeEbLa8DYdFB7OO6oTk_0jmPlgAV-Z5jjWVv5qA7GlewE57h9bYlma2VuQKLJz7o8KjWSJiInC1CBt0Uib2hxQyNbcPfr10PZe-hVqsAk6ikhnjW_O0k5WMp-VKFABWA2ZiUvKRuQ11"/>
+<span class="font-label text-[10px] text-secondary uppercase tracking-[0.2em]">Flora</span>
+<h5 class="font-display text-xl font-bold text-primary mt-1">绶草</h5>
+<p class="text-[12px] font-body text-on-surface-variant mt-2 italic">Spiranthes sinensis</p>
+</div>
+</div>
+<div class="flex-none w-80 snap-start">
+<div class="bg-surface rounded-xl archival-border p-5 transition-all hover:-translate-y-2 hover:shadow-xl">
+<img class="w-full h-56 object-cover rounded-sm mb-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAen51INdUVPZDvKl-Qfh3hHCRBtoxqPtjZMM1qoJQjRwxlS62GrqmJq6H-30QHdNK60pW8wOwQPC8G8UZGDjAu_37dF-ZtaJlkwFyxfsdb1pk6Tl1GEm4Qk54nyCPeZoOrrXrfE50_q8B3XMg1HN90_QD0ujJWElS5wkn0ZP-qCs5HYYsWcuaiU1mem5ujGzXCg2E2Xeq-q84PQHbHZCqAugE6ctgIfLzfigdBo2GDMaPG3OYP1K8EjYFwxGnN0QIklc596VCXb1ZI"/>
+<span class="font-label text-[10px] text-secondary uppercase tracking-[0.2em]">Fauna</span>
+<h5 class="font-display text-xl font-bold text-primary mt-1">中华蜜蜂</h5>
+<p class="text-[12px] font-body text-on-surface-variant mt-2 italic">Apis cerana</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Meet the Team -->
+<section class="py-24 px-6 md:px-margin-desktop max-w-container-max mx-auto">
+<div class="text-center mb-20">
+<span class="font-label text-xs text-secondary tracking-[0.2em] uppercase">The Stewards</span>
+<h2 class="font-display text-4xl font-bold text-primary mt-6">守护者与导师</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+<!-- Profile 1 -->
+<div class="text-center group">
+<div class="w-56 h-56 mx-auto rounded-full overflow-hidden mb-8 archival-border grayscale group-hover:grayscale-0 transition-all duration-700 shadow-md">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsAd9TzYLwJxhpL_I6rJSRR40lNG3gupmjIRCknsxVoc986bg_gE1dwZX6eMgVJqyXO78XLQKLoL-aKfd_POoznhWiSpZQcRSuLkivqNlxIqwF1It5Q_qqUC8S1i39jIicL0V6JPIXauDRAAjsmp1Ok-sOU1EN4wgq8-g8G43uiVF-C8NEGgdPpePxYOEnohQc2B5-c13pRHhBVoFJdlTt99h2K743MLm9_KRAGhnsLJcygwg24UFEyGRL1_6lZ41jJIwyAdKfijMK"/>
+</div>
+<h4 class="font-display text-2xl font-bold text-primary">陈博士</h4>
+<p class="font-label text-xs text-secondary mt-2 tracking-widest">创始人 &amp; 生态科学家</p>
+<p class="font-body text-on-surface-variant mt-5 px-6 leading-relaxed text-sm">深耕生态系统修复20载，致力于将实验室成果带入广阔田野。</p>
+</div>
+<!-- Profile 2 -->
+<div class="text-center group">
+<div class="w-56 h-56 mx-auto rounded-full overflow-hidden mb-8 archival-border grayscale group-hover:grayscale-0 transition-all duration-700 shadow-md">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXrG979fP6SDkUxJzVk50t4eRZ4Il8t7f4RkcOmMpl-JWaKpY7vIhSOlO3HybfAi5PvWh4zzAxTU1WXUUmHQ4Hk7GFu0IaLhkbb7Yl_B44N_vleVmnUFQNaBDPyHX7Q2m4ytcKDcUbJEA4a3rsDmEgV4XOVFds8nQDf4PjknwZ8CMEwDPOOElgvGGR2-h5ag63a_BJ5rdFZga7IFXkEzlyMbhqTsAfEx_AdRbgztFSDNXsXMK23ZI4Paff9u3-_ubl45rMCKFFknsP"/>
+</div>
+<h4 class="font-display text-2xl font-bold text-primary">林舒</h4>
+<p class="font-label text-xs text-secondary mt-2 tracking-widest">自然教育首席导师</p>
+<p class="font-body text-on-surface-variant mt-5 px-6 leading-relaxed text-sm">相信自然是最好的老师，擅长通过游戏与观察激发孩子的好奇心。</p>
+</div>
+<!-- Profile 3 -->
+<div class="text-center group">
+<div class="w-56 h-56 mx-auto rounded-full overflow-hidden mb-8 archival-border grayscale group-hover:grayscale-0 transition-all duration-700 shadow-md">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyFke2SY_BzbnLnpGU_O5mnUhpfDwWP3vosPxKim86megk4L3ZhobJYSvLqUdhpg7TTPLRFWGl9CB25yXqydbhJDBcZo6lODISTlBKtqOa3SIFJovCvm3WVRaXVJH1o-uURCjSn3tFhqBuxy07wMKrvVLx8qrlNOz2jjSjKQHUUjJ6GFEopvlBJurxDyvlw11L3KhhKPxiIjjIhU8OLbmMM47Rne0dw9WAIReNfDyMKVsfyagO-xpYQPeLJkSGntWXWp2pLrp_kdWq"/>
+</div>
+<h4 class="font-display text-2xl font-bold text-primary">王大伯</h4>
+<p class="font-label text-xs text-secondary mt-2 tracking-widest">农场首席顾问</p>
+<p class="font-body text-on-surface-variant mt-5 px-6 leading-relaxed text-sm">承袭世代农耕智慧，是学堂共生农法实践的最强力支柱。</p>
+</div>
+</div>
+</section>
+<!-- Latest Stories - Editorial Feed -->
+<section class="py-24 bg-surface-container-low">
+<div class="px-6 md:px-margin-desktop max-w-container-max mx-auto">
+<h2 class="font-display text-4xl font-bold text-primary mb-20 text-center">农场记事</h2>
+<div class="flex flex-col gap-16 max-w-5xl mx-auto">
+<!-- Blog Item 1 -->
+<div class="flex flex-col md:flex-row gap-12 items-start border-b border-outline-variant/30 pb-16 group">
+<div class="font-display text-7xl text-primary/10 w-24 shrink-0 font-bold group-hover:text-primary/20 transition-colors">01</div>
+<div class="flex-grow">
+<span class="font-label text-xs text-on-surface-variant mb-4 block tracking-widest">MARCH 24, 2024</span>
+<h3 class="font-display text-2xl font-bold text-primary mb-5 group-hover:text-secondary cursor-pointer transition-colors leading-tight">春耕启示：当第一枚种子遇上雨水</h3>
+<p class="font-body text-on-surface-variant text-base leading-relaxed">今年的春播比往年稍早，我们采用了新的覆盖作物技术来保护土层，观察这些微妙的变化本身就是一场修行...</p>
+</div>
+<div class="w-full md:w-80 h-52 rounded-sm overflow-hidden shrink-0 shadow-lg">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2R53BUyPCU7DJRsja-vNKY7trkpFt7D4GDCPIPPhytJZROpyDV2ylSj5KfyX3QVBmYQEMaWoWdlnVD-oT-kOH9CeVc1H0k4TGWOB2q0GPN2j6j6mtIu8pYIbdWslapkgtToETR0VyP6_5L4Uqz0heVyjNumd51fdvrRdzvDIYXXdzz55FkTLGbhV08TmdkX0hzD_hol15xV15Ro7cZGM-ZTZzxNwpuryW9eEUJFiJ4Yuf8an4_s0guvdJSovySmTNmd9m9Mw1WCZ1"/>
+</div>
+</div>
+<!-- Blog Item 2 -->
+<div class="flex flex-col md:flex-row gap-12 items-start border-b border-outline-variant/30 pb-16 group">
+<div class="font-display text-7xl text-primary/10 w-24 shrink-0 font-bold group-hover:text-primary/20 transition-colors">02</div>
+<div class="flex-grow">
+<span class="font-label text-xs text-on-surface-variant mb-4 block tracking-widest">MARCH 15, 2024</span>
+<h3 class="font-display text-2xl font-bold text-primary mb-5 group-hover:text-secondary cursor-pointer transition-colors leading-tight">在晨雾中辨识二十种鸟鸣</h3>
+<p class="font-body text-on-surface-variant text-base leading-relaxed">观鸟不仅是视觉的享受，更是听觉的盛宴。本期自然周，我们带领学生们走进森林深处，闭上双眼...</p>
+</div>
+<div class="w-full md:w-80 h-52 rounded-sm overflow-hidden shrink-0 shadow-lg">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGABxLm1qlBlUhpTTWQnCZUO1NdLDLc_4duAerx15bMeDhyDumvJSBllaYxqRYwOiaXXc8F74UMBUSoFGln39Ixf4BOKhAuHvrJWNcmp765lD1rR3q34Nl_-u-47chG5wcoGhZKC9TqWHq3Ke-JQt5lStPARCr2VaKtdur2p8pDCty731Y2Im0qD3nQwJFzyJs-a0mx_f1h9qUpwbCh7nsiEgQxhpLzm6InEMdq0H7VLDFY8TKna7V9rtKAHXcEkiv9Zp92-oPUgvW"/>
+</div>
+</div>
+</div>
+<div class="mt-20 text-center">
+<button class="font-label text-xs text-primary border-2 border-primary/30 px-12 py-5 rounded-xl hover:bg-primary hover:text-white transition-all font-semibold uppercase tracking-widest">阅读更多故事</button>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-surface-container-high border-t border-outline-variant/50">
+<div class="w-full py-20 px-6 md:px-margin-desktop max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-20">
+<div class="space-y-8">
+<h2 class="font-display text-3xl font-bold text-primary">北然生态基地</h2>
+<p class="font-body text-on-surface-variant max-w-sm leading-relaxed">
+                深植于可持续发展的理念，我们通过教育与实践，致力于恢复土地的生命力，建立人与自然和谐共生的桥梁。
+            </p>
+<div class="flex gap-6">
+<a class="material-symbols-outlined text-primary hover:text-secondary text-2xl" href="#">public</a>
+<a class="material-symbols-outlined text-primary hover:text-secondary text-2xl" href="#">mail</a>
+<a class="material-symbols-outlined text-primary hover:text-secondary text-2xl" href="#">camera</a>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-12">
+<div>
+<h5 class="font-label text-[10px] text-primary mb-8 uppercase tracking-[0.25em] font-bold">Explore</h5>
+<ul class="space-y-5">
+<li><a class="font-body text-sm text-on-surface-variant hover:text-primary transition-all border-b border-transparent hover:border-primary/30" href="#">Sustainability Reports</a></li>
+<li><a class="font-body text-sm text-on-surface-variant hover:text-primary transition-all border-b border-transparent hover:border-primary/30" href="#">Volunteer Opportunities</a></li>
+<li><a class="font-body text-sm text-on-surface-variant hover:text-primary transition-all border-b border-transparent hover:border-primary/30" href="#">Community Contact</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-label text-[10px] text-primary mb-8 uppercase tracking-[0.25em] font-bold">Legal</h5>
+<ul class="space-y-5">
+<li><a class="font-body text-sm text-on-surface-variant hover:text-primary transition-all border-b border-transparent hover:border-primary/30" href="#">Privacy Policy</a></li>
+<li><a class="font-body text-sm text-on-surface-variant hover:text-primary transition-all border-b border-transparent hover:border-primary/30" href="#">Terms of Service</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="border-t border-outline-variant/20 py-10 px-6 md:px-margin-desktop max-w-container-max mx-auto">
+<p class="font-label text-[10px] text-on-surface-variant text-center md:text-left opacity-60 tracking-widest uppercase">
+            © 2024 Symbiotic Farm &amp; 北然生态基地. Rooted in sustainability.
+        </p>
+</div>
+</footer>
+<script>
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (window.scrollY > 50) {
+            header.classList.add('shadow-lg');
+            header.classList.remove('bg-surface/90');
+            header.classList.add('bg-surface');
+        } else {
+            header.classList.remove('shadow-lg');
+            header.classList.add('bg-surface/90');
+            header.classList.remove('bg-surface');
+        }
+    });
+</script>
+</body></html>
