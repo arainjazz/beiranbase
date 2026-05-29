@@ -1,29 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { MockFrame } from "@/components/MockFrame";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "北然生态基地 | Ecological Academy & Symbiotic Farm" },
+      { name: "description", content: "北然生态基地 — Ecological academy and symbiotic farm in China." },
+      { property: "og:title", content: "北然生态基地" },
+      { property: "og:description", content: "Ecological academy and symbiotic farm." },
     ],
   }),
-  component: Index,
+  component: () => <MockFrame src="/mock/home.html" title="首页" />,
 });
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
