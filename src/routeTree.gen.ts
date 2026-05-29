@@ -9,11 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StoryRouteImport } from './routes/story'
 import { Route as SpeciesRouteImport } from './routes/species'
 import { Route as GiftsRouteImport } from './routes/gifts'
+import { Route as EcofarmingRouteImport } from './routes/ecofarming'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as IndexRouteImport } from './routes/index'
 
+const StoryRoute = StoryRouteImport.update({
+  id: '/story',
+  path: '/story',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SpeciesRoute = SpeciesRouteImport.update({
   id: '/species',
   path: '/species',
@@ -22,6 +29,11 @@ const SpeciesRoute = SpeciesRouteImport.update({
 const GiftsRoute = GiftsRouteImport.update({
   id: '/gifts',
   path: '/gifts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EcofarmingRoute = EcofarmingRouteImport.update({
+  id: '/ecofarming',
+  path: '/ecofarming',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -38,39 +50,61 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/courses': typeof CoursesRoute
+  '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
+  '/story': typeof StoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/courses': typeof CoursesRoute
+  '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
+  '/story': typeof StoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/courses': typeof CoursesRoute
+  '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
+  '/story': typeof StoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/courses' | '/gifts' | '/species'
+  fullPaths: '/' | '/courses' | '/ecofarming' | '/gifts' | '/species' | '/story'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/courses' | '/gifts' | '/species'
-  id: '__root__' | '/' | '/courses' | '/gifts' | '/species'
+  to: '/' | '/courses' | '/ecofarming' | '/gifts' | '/species' | '/story'
+  id:
+    | '__root__'
+    | '/'
+    | '/courses'
+    | '/ecofarming'
+    | '/gifts'
+    | '/species'
+    | '/story'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CoursesRoute: typeof CoursesRoute
+  EcofarmingRoute: typeof EcofarmingRoute
   GiftsRoute: typeof GiftsRoute
   SpeciesRoute: typeof SpeciesRoute
+  StoryRoute: typeof StoryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/story': {
+      id: '/story'
+      path: '/story'
+      fullPath: '/story'
+      preLoaderRoute: typeof StoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/species': {
       id: '/species'
       path: '/species'
@@ -83,6 +117,13 @@ declare module '@tanstack/react-router' {
       path: '/gifts'
       fullPath: '/gifts'
       preLoaderRoute: typeof GiftsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ecofarming': {
+      id: '/ecofarming'
+      path: '/ecofarming'
+      fullPath: '/ecofarming'
+      preLoaderRoute: typeof EcofarmingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -105,9 +146,21 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CoursesRoute: CoursesRoute,
+  EcofarmingRoute: EcofarmingRoute,
   GiftsRoute: GiftsRoute,
   SpeciesRoute: SpeciesRoute,
+  StoryRoute: StoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
