@@ -108,7 +108,7 @@
 </head>
 <body class="bg-surface text-on-surface overflow-x-hidden">
 <!-- TopNavBar -->
-<header class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-outline-variant">
+<header style="display:none" class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-outline-variant">
 <nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto h-20">
 <div class="font-serif text-2xl font-bold text-primary">北然生态基地</div>
 <div class="hidden lg:flex items-center space-x-8">
@@ -126,26 +126,14 @@
 </nav>
 </header>
 <main class="pt-20">
-<!-- Search Hero Section -->
+<!-- Intro Hero (search moved to bottom) -->
 <section class="relative py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-low overflow-hidden">
 <div class="max-w-container-max mx-auto relative z-10 text-center">
-<h1 class="text-4xl md:text-6xl font-bold text-on-background mb-6 leading-tight">探索万物之美</h1>
-<p class="text-lg text-on-surface-variant max-w-2xl mx-auto mb-12 font-body leading-relaxed">
+<h1 class="text-4xl md:text-6xl font-bold text-on-background mb-6 leading-tight">多物种共生</h1>
+<p class="text-lg text-on-surface-variant max-w-2xl mx-auto mb-4 font-body leading-relaxed">
                 通过我们的生态档案馆，发现并记录栖息在这一片土地上的奇妙生命。从微小的地衣到古老的林木，每一份记录都是自然的见证。
             </p>
-<div class="relative max-w-3xl mx-auto">
-<input class="w-full h-16 pl-14 pr-6 rounded-none border-none bg-white ring-1 ring-outline-variant focus:ring-2 focus:ring-primary font-body transition-all" placeholder="搜索物种、目、科或生境..." type="text"/>
-<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-primary text-2xl">search</span>
-<button class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-8 py-2 rounded-none font-label text-sm uppercase tracking-wider">检索档案</button>
 </div>
-<div class="mt-8 flex flex-wrap justify-center gap-3">
-<span class="font-label text-sm text-on-surface-variant py-2">热门搜索：</span>
-<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">孟加拉虎</a>
-<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">高山杜鹃</a>
-<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">迁徙候鸟</a>
-</div>
-</div>
-<!-- Atmospheric background element -->
 <div class="absolute bottom-0 right-0 w-1/3 h-full opacity-10 pointer-events-none">
 <img alt="Plant sketch" class="w-full h-full object-contain object-bottom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-QO0RiqF0Xx32U03Ts31xWDWSo4lIEJS4MeEc9JmfwmRqqbtWJfPYZAPB7b5S2nYYL36mGm9s-UDjkWCn_RPZPzOsdfu1KCtxtvowYGlp2MynSjAJHh8GV2f8musd3SAckAS4aJf0YPPoDiKe8cmvZHR9qLO1sO1wHGRrGLoIiIj8H6lA3AReePcJ7_ZwdOLIE6wyyqPwByLJ5KXu1vfqodOpMhDDHyvrb-ty_ARqFqKfr1ixKn0DckVfbY9Vj426Ory21odFxlbx"/>
 </div>
@@ -381,6 +369,24 @@
 </div>
 <div class="mt-20 text-center">
 <button class="bg-transparent text-primary px-16 py-4 rounded-none font-label text-xs font-bold uppercase tracking-[0.3em] archival-border hover:bg-primary hover:text-white transition-all">加载更多档案条目</button>
+</div>
+</section>
+<!-- Search Archive (moved to bottom) -->
+<section class="relative py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-low border-t border-outline-variant">
+<div class="max-w-container-max mx-auto relative z-10 text-center">
+<span class="font-label text-xs text-tertiary tracking-widest uppercase mb-3 block font-bold">Archive Search</span>
+<h2 class="text-3xl md:text-4xl font-bold text-on-background mb-8">检索物种档案</h2>
+<div class="relative max-w-3xl mx-auto">
+<input class="w-full h-16 pl-14 pr-32 rounded-none border-none bg-white ring-1 ring-outline-variant focus:ring-2 focus:ring-primary font-body transition-all" placeholder="搜索物种、目、科或生境..." type="text"/>
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-primary text-2xl">search</span>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-8 py-2 rounded-none font-label text-sm uppercase tracking-wider">检索档案</button>
+</div>
+<div class="mt-8 flex flex-wrap justify-center gap-3">
+<span class="font-label text-sm text-on-surface-variant py-2">热门搜索：</span>
+<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">孟加拉虎</a>
+<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">高山杜鹃</a>
+<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">迁徙候鸟</a>
+</div>
 </div>
 </section>
 </main>
