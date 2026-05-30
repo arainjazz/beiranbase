@@ -13,8 +13,8 @@ import { Route as StoryRouteImport } from './routes/story'
 import { Route as SpeciesRouteImport } from './routes/species'
 import { Route as GiftsRouteImport } from './routes/gifts'
 import { Route as EcofarmingRouteImport } from './routes/ecofarming'
-import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as IndexRouteImport } from './routes/index'
 
 const StoryRoute = StoryRouteImport.update({
@@ -37,14 +37,14 @@ const EcofarmingRoute = EcofarmingRouteImport.update({
   path: '/ecofarming',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CommunityRoute = CommunityRouteImport.update({
-  id: '/community',
-  path: '/community',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CoursesRoute = CoursesRouteImport.update({
   id: '/courses',
   path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,8 +55,8 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/courses': typeof CoursesRoute
   '/community': typeof CommunityRoute
+  '/courses': typeof CoursesRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
@@ -64,8 +64,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/courses': typeof CoursesRoute
   '/community': typeof CommunityRoute
+  '/courses': typeof CoursesRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
@@ -74,8 +74,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/courses': typeof CoursesRoute
   '/community': typeof CommunityRoute
+  '/courses': typeof CoursesRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
@@ -83,14 +83,28 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/courses' | '/community' | '/ecofarming' | '/gifts' | '/species' | '/story'
+  fullPaths:
+    | '/'
+    | '/community'
+    | '/courses'
+    | '/ecofarming'
+    | '/gifts'
+    | '/species'
+    | '/story'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/courses' | '/community' | '/ecofarming' | '/gifts' | '/species' | '/story'
+  to:
+    | '/'
+    | '/community'
+    | '/courses'
+    | '/ecofarming'
+    | '/gifts'
+    | '/species'
+    | '/story'
   id:
     | '__root__'
     | '/'
-    | '/courses'
     | '/community'
+    | '/courses'
     | '/ecofarming'
     | '/gifts'
     | '/species'
@@ -99,8 +113,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CoursesRoute: typeof CoursesRoute
   CommunityRoute: typeof CommunityRoute
+  CoursesRoute: typeof CoursesRoute
   EcofarmingRoute: typeof EcofarmingRoute
   GiftsRoute: typeof GiftsRoute
   SpeciesRoute: typeof SpeciesRoute
@@ -137,18 +151,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EcofarmingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/community': {
-      id: '/community'
-      path: '/community'
-      fullPath: '/community'
-      preLoaderRoute: typeof CommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/courses': {
       id: '/courses'
       path: '/courses'
       fullPath: '/courses'
       preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -163,8 +177,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CoursesRoute: CoursesRoute,
   CommunityRoute: CommunityRoute,
+  CoursesRoute: CoursesRoute,
   EcofarmingRoute: EcofarmingRoute,
   GiftsRoute: GiftsRoute,
   SpeciesRoute: SpeciesRoute,
