@@ -13,8 +13,8 @@ import { Route as StoryRouteImport } from './routes/story'
 import { Route as SpeciesRouteImport } from './routes/species'
 import { Route as GiftsRouteImport } from './routes/gifts'
 import { Route as EcofarmingRouteImport } from './routes/ecofarming'
-import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as CommunityRouteImport } from './routes/community'
+import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as IndexRouteImport } from './routes/index'
 
 const StoryRoute = StoryRouteImport.update({
@@ -37,14 +37,14 @@ const EcofarmingRoute = EcofarmingRouteImport.update({
   path: '/ecofarming',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CoursesRoute = CoursesRouteImport.update({
-  id: '/courses',
-  path: '/courses',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CommunityRoute = CommunityRouteImport.update({
   id: '/community',
   path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,8 +55,8 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/community': typeof CommunityRoute
   '/courses': typeof CoursesRoute
+  '/community': typeof CommunityRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
@@ -64,8 +64,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/community': typeof CommunityRoute
   '/courses': typeof CoursesRoute
+  '/community': typeof CommunityRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
@@ -74,8 +74,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/community': typeof CommunityRoute
   '/courses': typeof CoursesRoute
+  '/community': typeof CommunityRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
   '/species': typeof SpeciesRoute
@@ -83,28 +83,14 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/community'
-    | '/courses'
-    | '/ecofarming'
-    | '/gifts'
-    | '/species'
-    | '/story'
+  fullPaths: '/' | '/courses' | '/community' | '/ecofarming' | '/gifts' | '/species' | '/story'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/community'
-    | '/courses'
-    | '/ecofarming'
-    | '/gifts'
-    | '/species'
-    | '/story'
+  to: '/' | '/courses' | '/community' | '/ecofarming' | '/gifts' | '/species' | '/story'
   id:
     | '__root__'
     | '/'
-    | '/community'
     | '/courses'
+    | '/community'
     | '/ecofarming'
     | '/gifts'
     | '/species'
@@ -113,8 +99,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CommunityRoute: typeof CommunityRoute
   CoursesRoute: typeof CoursesRoute
+  CommunityRoute: typeof CommunityRoute
   EcofarmingRoute: typeof EcofarmingRoute
   GiftsRoute: typeof GiftsRoute
   SpeciesRoute: typeof SpeciesRoute
@@ -151,18 +137,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EcofarmingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/courses': {
-      id: '/courses'
-      path: '/courses'
-      fullPath: '/courses'
-      preLoaderRoute: typeof CoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/community': {
       id: '/community'
       path: '/community'
       fullPath: '/community'
       preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -177,8 +163,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CommunityRoute: CommunityRoute,
   CoursesRoute: CoursesRoute,
+  CommunityRoute: CommunityRoute,
   EcofarmingRoute: EcofarmingRoute,
   GiftsRoute: GiftsRoute,
   SpeciesRoute: SpeciesRoute,
@@ -187,13 +173,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
