@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StoryRouteImport } from './routes/story'
 import { Route as SpeciesRouteImport } from './routes/species'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GiftsRouteImport } from './routes/gifts'
 import { Route as EcofarmingRouteImport } from './routes/ecofarming'
 import { Route as CoursesRouteImport } from './routes/courses'
@@ -25,6 +26,11 @@ const StoryRoute = StoryRouteImport.update({
 const SpeciesRoute = SpeciesRouteImport.update({
   id: '/species',
   path: '/species',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GiftsRoute = GiftsRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/courses': typeof CoursesRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
+  '/login': typeof LoginRoute
   '/species': typeof SpeciesRoute
   '/story': typeof StoryRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
+  '/login': typeof LoginRoute
   '/species': typeof SpeciesRoute
   '/story': typeof StoryRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/courses': typeof CoursesRoute
   '/ecofarming': typeof EcofarmingRoute
   '/gifts': typeof GiftsRoute
+  '/login': typeof LoginRoute
   '/species': typeof SpeciesRoute
   '/story': typeof StoryRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/ecofarming'
     | '/gifts'
+    | '/login'
     | '/species'
     | '/story'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/ecofarming'
     | '/gifts'
+    | '/login'
     | '/species'
     | '/story'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/ecofarming'
     | '/gifts'
+    | '/login'
     | '/species'
     | '/story'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   CoursesRoute: typeof CoursesRoute
   EcofarmingRoute: typeof EcofarmingRoute
   GiftsRoute: typeof GiftsRoute
+  LoginRoute: typeof LoginRoute
   SpeciesRoute: typeof SpeciesRoute
   StoryRoute: typeof StoryRoute
 }
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/species'
       fullPath: '/species'
       preLoaderRoute: typeof SpeciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gifts': {
@@ -181,9 +201,20 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesRoute: CoursesRoute,
   EcofarmingRoute: EcofarmingRoute,
   GiftsRoute: GiftsRoute,
+  LoginRoute: LoginRoute,
   SpeciesRoute: SpeciesRoute,
   StoryRoute: StoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
