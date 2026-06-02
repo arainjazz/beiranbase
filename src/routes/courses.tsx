@@ -1,14 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MockFrame } from "@/components/MockFrame";
+import { SiteShell } from "@/components/SiteShell";
+import { ContentPage } from "@/components/ContentPage";
 
 export const Route = createFileRoute("/courses")({
   head: () => ({
     meta: [
-      { title: "自然课程 - 北然生态基地" },
-      { name: "description", content: "Nature courses at Beiran Ecological Base." },
-      { property: "og:title", content: "自然课程 - 北然生态基地" },
-      { property: "og:description", content: "Nature courses at Beiran Ecological Base." },
+      { title: "自然课程 | 北然生态基地" },
+      { name: "description", content: "北然生态基地的四季自然课程与工作坊。" },
     ],
   }),
-  component: () => <MockFrame src="/mock/courses.html" title="自然课程" />,
+  component: () => (
+    <SiteShell>
+      <ContentPage page="courses" />
+    </SiteShell>
+  ),
 });
