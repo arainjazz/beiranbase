@@ -16,6 +16,7 @@ interface Props {
   src: string;
   title: string;
   page?: MockPageKey;
+  afterFrame?: React.ReactNode;
 }
 
 type SavedPost = {
