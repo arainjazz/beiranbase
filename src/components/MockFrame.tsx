@@ -569,6 +569,7 @@ export function MockFrame({ src, title, page, afterFrame }: Props) {
   return (
     <SiteShell>
       <iframe ref={iframeRef} src={src} title={title} className="w-full border-0 bg-white" style={{ height }} />
+      {afterFrame}
     </SiteShell>
   );
 }
