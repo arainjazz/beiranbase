@@ -53,7 +53,7 @@ export function SiteNav() {
               <Link
                 to="/login"
                 search={{ request: "admin", mode: "signup" }}
-                className="hidden sm:flex flex-col items-center rounded border border-emerald-700 px-3 py-1.5 leading-tight text-emerald-800 transition hover:bg-emerald-50"
+                className="hidden md:flex flex-col items-center rounded border border-emerald-700 px-3 py-1.5 leading-tight text-emerald-800 transition hover:bg-emerald-50"
               >
                 <span className="text-xs">注册管理员</span>
                 <span className="text-[9px] uppercase opacity-80">Admin Sign-up</span>
@@ -86,7 +86,7 @@ export function SiteNav() {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="flex flex-col items-center rounded bg-emerald-900 px-3 py-1.5 leading-tight text-white hover:bg-emerald-950"
+                  className="hidden md:flex flex-col items-center rounded bg-emerald-900 px-3 py-1.5 leading-tight text-white hover:bg-emerald-950"
                 >
                   <span className="text-xs">管理后台</span>
                   <span className="text-[9px] uppercase opacity-80">Admin</span>
