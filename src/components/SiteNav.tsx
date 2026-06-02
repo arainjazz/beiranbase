@@ -144,6 +144,16 @@ export function SiteNav() {
               <span className="text-[10px] uppercase opacity-70">{n.en}</span>
             </Link>
           ))}
+          {user && isAdmin && (
+            <Link
+              to="/admin"
+              onClick={() => setMenuOpen(false)}
+              className="mt-1 flex items-baseline justify-between rounded bg-emerald-900 px-3 py-3 leading-tight text-white"
+            >
+              <span className="text-base">管理后台</span>
+              <span className="text-[10px] uppercase opacity-80">Admin</span>
+            </Link>
+          )}
         </div>
       )}
     </nav>
