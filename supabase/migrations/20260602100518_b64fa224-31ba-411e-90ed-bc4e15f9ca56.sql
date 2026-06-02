@@ -1,0 +1,1 @@
+ALTER TYPE public.post_page ADD VALUE IF NOT EXISTS 'home';
