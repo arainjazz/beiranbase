@@ -4,6 +4,7 @@ import { useSession } from "@/hooks/useSession";
 import { supabase } from "@/integrations/supabase/client";
 
 export type MockPageKey =
+  | "home"
   | "species"
   | "courses"
   | "ecofarming"
