@@ -79,6 +79,57 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback_messages: {
+        Row: {
+          body: string
+          created_at: string
+          email: string | null
+          id: string
+          is_read: boolean
+          name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_read?: boolean
+          name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_read?: boolean
+          name?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      page_intros: {
+        Row: {
+          intro: string
+          page: Database["public"]["Enums"]["post_page"]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          intro?: string
+          page: Database["public"]["Enums"]["post_page"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          intro?: string
+          page?: Database["public"]["Enums"]["post_page"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           author_id: string | null
@@ -87,6 +138,7 @@ export type Database = {
           id: string
           image_url: string | null
           page: Database["public"]["Enums"]["post_page"]
+          sort_order: number
           subtitle: string | null
           title: string
           updated_at: string
@@ -98,6 +150,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           page: Database["public"]["Enums"]["post_page"]
+          sort_order?: number
           subtitle?: string | null
           title: string
           updated_at?: string
@@ -109,6 +162,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           page?: Database["public"]["Enums"]["post_page"]
+          sort_order?: number
           subtitle?: string | null
           title?: string
           updated_at?: string
@@ -199,7 +253,13 @@ export type Database = {
     }
     Enums: {
       app_role: "owner" | "admin" | "subscriber"
-      post_page: "story" | "community"
+      post_page:
+        | "story"
+        | "community"
+        | "species"
+        | "courses"
+        | "ecofarming"
+        | "gifts"
       request_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
@@ -329,7 +389,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["owner", "admin", "subscriber"],
-      post_page: ["story", "community"],
+      post_page: [
+        "story",
+        "community",
+        "species",
+        "courses",
+        "ecofarming",
+        "gifts",
+      ],
       request_status: ["pending", "approved", "rejected"],
     },
   },
