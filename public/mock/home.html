@@ -122,9 +122,22 @@
 </header>
 <!-- Hero Section -->
 <section class="relative h-screen min-h-[700px] flex items-center overflow-hidden pt-20">
-<div class="absolute inset-0 z-0">
-<img class="w-full h-full object-cover" data-alt="A sweeping, cinematic landscape of a lush, verdant sustainable farm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh0Ww_RO92BqVYp88eiGy2PNy7F9EIK345LVO0WWCycBLV-tdnfaoyBJtantP5Rcmj37QxCvU0uVMxjXWZqlh-Md7O4n7jFBznUAoysy81XZjGnfoPh9kyQYWf2wpqZtlHEvl5UFqbfX5i29rNE9T97vQOp0QySfTjZU3Tv2DgexOKqPSgO0qizxPuhYE5dtllRz9ApX_5--TmPxByOEswKbKXjbLCQB8Rwl2aPUUhsVmgOVCnJ0b3lVWoSLp23GGrvW7eEqp0h6Kv"/>
-<div class="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent"></div>
+<div class="absolute inset-0 z-0" id="hero-carousel">
+<img class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 opacity-100" src="/hero/h1.jpg" alt="北然生态基地"/>
+<img class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 opacity-0" src="/hero/h2.jpg" alt="湿地植物"/>
+<img class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 opacity-0" src="/hero/h3.jpg" alt="水族生态"/>
+<div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
+<script>
+(function(){
+  var slides = document.querySelectorAll('#hero-carousel .hero-slide');
+  var i = 0;
+  setInterval(function(){
+    slides[i].style.opacity = '0';
+    i = (i + 1) % slides.length;
+    slides[i].style.opacity = '1';
+  }, 4500);
+})();
+</script>
 </div>
 <div class="relative z-10 px-6 md:px-margin-desktop max-w-container-max mx-auto w-full">
 <div class="max-w-2xl text-white">
