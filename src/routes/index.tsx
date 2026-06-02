@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MockFrame } from "@/components/MockFrame";
+import { FeaturedFromPages } from "@/components/FeaturedFromPages";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -10,5 +11,14 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Ecological academy and symbiotic farm." },
     ],
   }),
-  component: () => <MockFrame src="/mock/home.html" title="首页" />,
+  component: HomePage,
 });
+
+function HomePage() {
+  return (
+    <>
+      <MockFrame src="/mock/home.html" title="首页" page="home" />
+      <FeaturedFromPages />
+    </>
+  );
+}
