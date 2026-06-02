@@ -11,14 +11,12 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Ecological academy and symbiotic farm." },
     ],
   }),
-  component: HomePage,
+  component: () => (
+    <MockFrame
+      src="/mock/home.html"
+      title="首页"
+      page="home"
+      afterFrame={<FeaturedFromPages />}
+    />
+  ),
 });
-
-function HomePage() {
-  return (
-    <>
-      <MockFrame src="/mock/home.html" title="首页" page="home" />
-      <FeaturedFromPages />
-    </>
-  );
-}
