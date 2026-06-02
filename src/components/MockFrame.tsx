@@ -314,7 +314,7 @@ function startVisualEdit(opts: {
   selectNode(firstEditableChild(block));
 }
 
-export function MockFrame({ src, title, page }: Props) {
+export function MockFrame({ src, title, page, afterFrame }: Props) {
   const { roles } = useSession();
   const isAdmin = roles.includes("owner") || roles.includes("admin");
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
