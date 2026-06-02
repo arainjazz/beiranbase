@@ -260,6 +260,7 @@ export type Database = {
         | "courses"
         | "ecofarming"
         | "gifts"
+        | "home"
       request_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
@@ -396,6 +397,7 @@ export const Constants = {
         "courses",
         "ecofarming",
         "gifts",
+        "home",
       ],
       request_status: ["pending", "approved", "rejected"],
     },

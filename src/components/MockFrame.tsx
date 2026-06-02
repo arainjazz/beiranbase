@@ -4,6 +4,7 @@ import { useSession } from "@/hooks/useSession";
 import { supabase } from "@/integrations/supabase/client";
 
 export type MockPageKey =
+  | "home"
   | "species"
   | "courses"
   | "ecofarming"
@@ -15,6 +16,7 @@ interface Props {
   src: string;
   title: string;
   page?: MockPageKey;
+  afterFrame?: React.ReactNode;
 }
 
 type SavedPost = {
@@ -35,11 +37,7 @@ function pickBlocks(doc: Document): HTMLElement[] {
     const leaves = semantic.filter((el) => !el.querySelector("section, article"));
     return leaves.length > 0 ? leaves : semantic;
   }
-
   const children = Array.from(main.children) as HTMLElement[];
-  const grid = children.find((el) => el.matches(".grid") || el.className.includes("grid"));
-  if (grid) return Array.from(grid.children) as HTMLElement[];
-
   return children.filter((el) => !["SCRIPT", "STYLE", "TEMPLATE"].includes(el.tagName));
 }
 
@@ -78,13 +76,11 @@ function cleanAdminChrome(el: HTMLElement) {
   clone.removeAttribute("contenteditable");
   clone.removeAttribute("draggable");
   clone.querySelectorAll("[draggable]").forEach((node) => node.removeAttribute("draggable"));
-  clone.style.outline = "";
-  clone.style.outlineOffset = "";
-  clone.style.caretColor = "";
-  clone.style.cursor = "";
-  clone.style.userSelect = "";
+  ["outline", "outlineOffset", "caretColor", "cursor", "userSelect"].forEach((k) => {
+    (clone.style as any)[k] = "";
+  });
   clone.classList.remove("lov-editing");
-  clone.querySelectorAll(".lov-selected-node").forEach((node) => node.classList.remove("lov-selected-node"));
+  clone.querySelectorAll(".lov-selected-node").forEach((n) => n.classList.remove("lov-selected-node"));
   return clone.outerHTML;
 }
 
@@ -94,26 +90,26 @@ function startVisualEdit(opts: {
   onSave: (html: string) => Promise<void> | void;
   onCancel: () => void;
   onDelete?: () => Promise<void> | void;
-  onMove?: (direction: -1 | 1) => Promise<void> | void;
   showDelete?: boolean;
 }) {
-  const { doc, block, onSave, onCancel, onDelete, onMove, showDelete } = opts;
+  const { doc, block, onSave, onCancel, onDelete, showDelete } = opts;
   const win = doc.defaultView;
   const original = block.outerHTML;
   let selectedNode: HTMLElement = firstEditableChild(block);
   let selectedImage: HTMLImageElement | null = null;
-  let dragging: HTMLElement | null = null;
   let saving = false;
 
   doc.querySelectorAll(`[${ADMIN_ATTR}="toolbar"], [${ADMIN_ATTR}="nodebar"]`).forEach((el) => el.remove());
   block.querySelectorAll(`[${ADMIN_ATTR}]`).forEach((el) => el.remove());
   block.contentEditable = "true";
   block.classList.add("lov-editing");
-  block.style.outline = "2px dashed #047857";
-  block.style.outlineOffset = "6px";
-  block.style.caretColor = "#111827";
-  block.style.cursor = "text";
-  block.style.userSelect = "text";
+  Object.assign(block.style, {
+    outline: "2px dashed #047857",
+    outlineOffset: "6px",
+    caretColor: "#111827",
+    cursor: "text",
+    userSelect: "text",
+  });
   block.focus();
 
   const style = doc.createElement("style");
@@ -152,7 +148,6 @@ function startVisualEdit(opts: {
     if (selectedImage) {
       selectedImage.src = dataUrl;
       selectedImage.removeAttribute("srcset");
-      selectedImage.alt = selectedImage.alt || file.name.replace(/\.[^.]+$/, "");
       selectNode(selectedImage);
       return;
     }
@@ -171,38 +166,11 @@ function startVisualEdit(opts: {
 
   const toolbar = doc.createElement("div");
   toolbar.setAttribute(ADMIN_ATTR, "toolbar");
-  toolbar.style.cssText = [
-    "position:fixed",
-    "top:12px",
-    "left:50%",
-    "transform:translateX(-50%)",
-    "z-index:99999",
-    "display:flex",
-    "gap:5px",
-    "flex-wrap:wrap",
-    "align-items:center",
-    "padding:8px",
-    "background:#111827",
-    "border-radius:10px",
-    "box-shadow:0 10px 25px rgba(0,0,0,.25)",
-    "font:500 12px/1 system-ui,sans-serif",
-    "max-width:96vw",
-  ].join(";");
+  toolbar.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;gap:5px;flex-wrap:wrap;align-items:center;padding:8px;background:#111827;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,.25);font:500 12px/1 system-ui,sans-serif;max-width:96vw;";
 
   const nodebar = doc.createElement("div");
   nodebar.setAttribute(ADMIN_ATTR, "nodebar");
-  nodebar.style.cssText = [
-    "position:absolute",
-    "z-index:99998",
-    "display:flex",
-    "gap:4px",
-    "padding:5px",
-    "background:#ffffff",
-    "border:1px solid #d1d5db",
-    "border-radius:8px",
-    "box-shadow:0 8px 20px rgba(0,0,0,.16)",
-    "font:500 12px/1 system-ui,sans-serif",
-  ].join(";");
+  nodebar.style.cssText = "position:absolute;z-index:99998;display:flex;gap:4px;padding:5px;background:#fff;border:1px solid #d1d5db;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.16);font:500 12px/1 system-ui,sans-serif;";
 
   function moveNodebar() {
     if (!win || !selectedNode.isConnected) return;
@@ -221,7 +189,6 @@ function startVisualEdit(opts: {
     b.onclick = fn;
     return b;
   };
-
   const mkNodeBtn = (label: string, title: string, fn: () => void) => {
     const b = doc.createElement("button");
     b.type = "button";
@@ -244,18 +211,16 @@ function startVisualEdit(opts: {
     p.style.cssText = "margin:16px 0;line-height:1.75;";
     insertAfterSelected(p);
   };
-
   const makeHeading = () => {
     const h = doc.createElement("h2");
     h.textContent = "新的小标题";
     h.style.cssText = "margin:24px 0 12px;font-size:28px;line-height:1.25;";
     insertAfterSelected(h);
   };
-
   const makeCard = () => {
     const card = doc.createElement("div");
     card.style.cssText = "margin:20px 0;padding:22px;border:1px solid #d1d5db;border-radius:10px;background:#fff;";
-    card.innerHTML = "<h3 style=\"margin:0 0 10px;font-size:22px;line-height:1.35;\">新内容卡片</h3><p style=\"margin:0;line-height:1.7;\">在这里输入卡片正文…</p>";
+    card.innerHTML = "<h3 style=\"margin:0 0 10px;font-size:22px;line-height:1.35;\">新内容卡片</h3><p style=\"margin:0;line-height:1.7;\">在此输入卡片正文…</p>";
     insertAfterSelected(card);
   };
 
@@ -276,12 +241,9 @@ function startVisualEdit(opts: {
     block.contentEditable = "false";
     block.classList.remove("lov-editing");
     block.querySelectorAll(".lov-selected-node").forEach((el) => el.classList.remove("lov-selected-node"));
-    block.style.outline = "";
-    block.style.outlineOffset = "";
-    block.style.caretColor = "";
-    block.style.cursor = "";
-    block.style.userSelect = "";
-    block.querySelectorAll("[draggable]").forEach((node) => node.removeAttribute("draggable"));
+    ["outline", "outlineOffset", "caretColor", "cursor", "userSelect"].forEach((k) => {
+      (block.style as any)[k] = "";
+    });
   };
 
   toolbar.appendChild(mkBtn("B", "粗体", () => cmd("bold")));
@@ -290,117 +252,69 @@ function startVisualEdit(opts: {
   toolbar.appendChild(mkBtn("H2", "标题 2", () => cmd("formatBlock", "H2")));
   toolbar.appendChild(mkBtn("H3", "标题 3", () => cmd("formatBlock", "H3")));
   toolbar.appendChild(mkBtn("正文", "段落", () => cmd("formatBlock", "P")));
-  toolbar.appendChild(mkBtn("• 列表", "无序列表", () => cmd("insertUnorderedList")));
-  toolbar.appendChild(mkBtn("1. 列表", "有序列表", () => cmd("insertOrderedList")));
-  toolbar.appendChild(mkBtn("+ 标题", "新增标题块", makeHeading));
-  toolbar.appendChild(mkBtn("+ 正文", "新增正文块", makeParagraph));
-  toolbar.appendChild(mkBtn("+ 卡片", "新增卡片块", makeCard));
-  toolbar.appendChild(mkBtn("🖼 图片", "从本地选择图片", () => fileInput.click()));
-  toolbar.appendChild(
-    mkBtn("🔗 链接", "给选中文字添加链接", () => {
-      const url = win?.prompt("链接 URL", "https://");
-      if (url) cmd("createLink", url);
-    }),
-  );
-  toolbar.appendChild(mkBtn("↑ 区块", "整个版块上移", () => void onMove?.(-1)));
-  toolbar.appendChild(mkBtn("↓ 区块", "整个版块下移", () => void onMove?.(1)));
-  toolbar.appendChild(mkBtn("清格式", "清除选区格式", () => cmd("removeFormat")));
-  toolbar.appendChild(
-    mkBtn(
-      "保存",
-      "保存并退出编辑",
-      () => {
-        if (saving) return;
-        saving = true;
-        const html = cleanAdminChrome(block);
-        finish();
-        void Promise.resolve(onSave(html)).finally(() => {
-          saving = false;
-        });
-      },
-      "#059669",
-    ),
-  );
-  toolbar.appendChild(
-    mkBtn(
-      "取消",
-      "放弃本次修改",
-      () => {
-        finish();
-        const wrapper = doc.createElement("div");
-        wrapper.innerHTML = original;
-        const restored = wrapper.firstElementChild as HTMLElement | null;
-        if (restored) block.replaceWith(restored);
-        onCancel();
-      },
-      "#6b7280",
-    ),
-  );
+  toolbar.appendChild(mkBtn("• 列表", "无序", () => cmd("insertUnorderedList")));
+  toolbar.appendChild(mkBtn("1. 列表", "有序", () => cmd("insertOrderedList")));
+  toolbar.appendChild(mkBtn("+ 标题", "新增标题", makeHeading));
+  toolbar.appendChild(mkBtn("+ 正文", "新增正文", makeParagraph));
+  toolbar.appendChild(mkBtn("+ 卡片", "新增卡片", makeCard));
+  toolbar.appendChild(mkBtn("🖼 图片", "插入图片", () => fileInput.click()));
+  toolbar.appendChild(mkBtn("🔗 链接", "添加链接", () => {
+    const url = win?.prompt("链接 URL", "https://");
+    if (url) cmd("createLink", url);
+  }));
+  toolbar.appendChild(mkBtn("清格式", "清除格式", () => cmd("removeFormat")));
+  toolbar.appendChild(mkBtn("保存", "保存退出", () => {
+    if (saving) return;
+    saving = true;
+    const html = cleanAdminChrome(block);
+    finish();
+    void Promise.resolve(onSave(html)).finally(() => { saving = false; });
+  }, "#059669"));
+  toolbar.appendChild(mkBtn("取消", "放弃修改", () => {
+    finish();
+    const wrap = doc.createElement("div");
+    wrap.innerHTML = original;
+    const restored = wrap.firstElementChild as HTMLElement | null;
+    if (restored) block.replaceWith(restored);
+    onCancel();
+  }, "#6b7280"));
   if (showDelete) {
-    toolbar.appendChild(
-      mkBtn(
-        "删除版块",
-        "删除整个版块",
-        () => {
-          if (!win?.confirm("确定要删除该版块吗？")) return;
-          finish();
-          block.remove();
-          void onDelete?.();
-        },
-        "#b91c1c",
-      ),
-    );
+    toolbar.appendChild(mkBtn("删除版块", "删除整版", () => {
+      if (!win?.confirm("确定要删除该版块吗？")) return;
+      finish();
+      block.remove();
+      void onDelete?.();
+    }, "#b91c1c"));
   }
 
-  nodebar.appendChild(mkNodeBtn("+ 正文", "在当前内容后新增正文", makeParagraph));
-  nodebar.appendChild(mkNodeBtn("+ 图", "在当前内容后新增图片", () => fileInput.click()));
-  nodebar.appendChild(mkNodeBtn("↑", "当前内容上移", () => moveSelected(-1)));
-  nodebar.appendChild(mkNodeBtn("↓", "当前内容下移", () => moveSelected(1)));
-  nodebar.appendChild(
-    mkNodeBtn("删", "删除当前内容", () => {
-      const next = (selectedNode.nextElementSibling || selectedNode.previousElementSibling) as HTMLElement | null;
-      if (selectedNode !== block) selectedNode.remove();
-      selectNode(next ?? firstEditableChild(block));
-    }),
-  );
+  nodebar.appendChild(mkNodeBtn("+ 正文", "新增正文", makeParagraph));
+  nodebar.appendChild(mkNodeBtn("+ 图", "新增图片", () => fileInput.click()));
+  nodebar.appendChild(mkNodeBtn("↑", "上移", () => moveSelected(-1)));
+  nodebar.appendChild(mkNodeBtn("↓", "下移", () => moveSelected(1)));
+  nodebar.appendChild(mkNodeBtn("删", "删除", () => {
+    const next = (selectedNode.nextElementSibling || selectedNode.previousElementSibling) as HTMLElement | null;
+    if (selectedNode !== block) selectedNode.remove();
+    selectNode(next ?? firstEditableChild(block));
+  }));
 
   doc.body.appendChild(toolbar);
   doc.body.appendChild(nodebar);
 
-  (Array.from(block.children) as HTMLElement[]).forEach((child) => {
-    child.draggable = true;
-    child.addEventListener("dragstart", () => {
-      dragging = child;
-      selectNode(child);
-    });
-    child.addEventListener("dragover", (event) => event.preventDefault());
-    child.addEventListener("drop", (event) => {
-      event.preventDefault();
-      if (!dragging || dragging === child) return;
-      const rect = child.getBoundingClientRect();
-      if (event.clientY < rect.top + rect.height / 2) child.before(dragging);
-      else child.after(dragging);
-      selectNode(dragging);
-      dragging = null;
-    });
-  });
-
-  block.addEventListener("click", (event) => selectNode(childForTarget(block, event.target)));
+  block.addEventListener("click", (e) => selectNode(childForTarget(block, e.target)));
   block.addEventListener("keyup", moveNodebar);
   block.addEventListener("mouseup", moveNodebar);
-  block.addEventListener("contextmenu", (event) => {
-    const img = event.target instanceof HTMLElement ? event.target.closest("img") : null;
+  block.addEventListener("contextmenu", (e) => {
+    const img = e.target instanceof HTMLElement ? e.target.closest("img") : null;
     if (!img) return;
-    event.preventDefault();
+    e.preventDefault();
     selectNode(img as HTMLImageElement);
-    selectedImage = img as HTMLImageElement;
     fileInput.click();
   });
   win?.addEventListener("scroll", moveNodebar, { passive: true });
   selectNode(firstEditableChild(block));
 }
 
-export function MockFrame({ src, title, page }: Props) {
+export function MockFrame({ src, title, page, afterFrame }: Props) {
   const { roles } = useSession();
   const isAdmin = roles.includes("owner") || roles.includes("admin");
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -421,9 +335,7 @@ export function MockFrame({ src, title, page }: Props) {
     return map;
   }, [page]);
 
-  useEffect(() => {
-    void loadSaved();
-  }, [loadSaved]);
+  useEffect(() => { void loadSaved(); }, [loadSaved]);
 
   const decorate = useCallback(() => {
     const iframe = iframeRef.current;
@@ -446,26 +358,20 @@ export function MockFrame({ src, title, page }: Props) {
       blocks.forEach((el, idx) => {
         const saved = savedByOrder.get(idx);
         if (!saved) return;
-        const wrapper = doc.createElement("div");
-        wrapper.innerHTML = saved.body;
-        const replacement = wrapper.firstElementChild as HTMLElement | null;
-        if (replacement) {
-          el.replaceWith(replacement);
-          blocks[idx] = replacement;
-        }
+        const wrap = doc.createElement("div");
+        wrap.innerHTML = saved.body;
+        const repl = wrap.firstElementChild as HTMLElement | null;
+        if (repl) { el.replaceWith(repl); blocks[idx] = repl; }
       });
       const main = (doc.querySelector("main") ?? doc.body) as HTMLElement;
       Array.from(savedByOrder.entries())
         .filter(([order]) => order >= blocks.length)
         .sort((a, b) => a[0] - b[0])
         .forEach(([, saved]) => {
-          const wrapper = doc.createElement("div");
-          wrapper.innerHTML = saved.body;
-          const el = wrapper.firstElementChild as HTMLElement | null;
-          if (el) {
-            main.appendChild(el);
-            blocks.push(el);
-          }
+          const wrap = doc.createElement("div");
+          wrap.innerHTML = saved.body;
+          const el = wrap.firstElementChild as HTMLElement | null;
+          if (el) { main.appendChild(el); blocks.push(el); }
         });
     }
 
@@ -474,62 +380,128 @@ export function MockFrame({ src, title, page }: Props) {
     ro.observe(doc.body);
 
     if (!isAdmin || !page) {
-      return () => {
-        ro.disconnect();
-        cancelAnimationFrame(raf);
-      };
+      return () => { ro.disconnect(); cancelAnimationFrame(raf); };
     }
 
-    const persistOrder = async (currentBlocks: HTMLElement[]) => {
-      const updates = currentBlocks.map((el, order) => {
-        const id = savedByOrder.get(Number(el.getAttribute(EDITABLE_ATTR)))?.id;
-        return id
-          ? supabase.from("posts").update({ sort_order: order }).eq("id", id)
-          : Promise.resolve({ error: null });
-      });
-      await Promise.all(updates);
+    // Global right-click → replace image (admin always-on)
+    const globalFile = doc.createElement("input");
+    globalFile.setAttribute(ADMIN_ATTR, "global-file");
+    globalFile.type = "file";
+    globalFile.accept = "image/*";
+    globalFile.style.display = "none";
+    doc.body.appendChild(globalFile);
+    let pendingImg: HTMLImageElement | null = null;
+    const onContext = (e: MouseEvent) => {
+      const img = e.target instanceof HTMLElement ? e.target.closest("img") : null;
+      if (!img) return;
+      // skip if inside an edit-active block (handled by editor's own listener)
+      if ((img as HTMLElement).closest(".lov-editing")) return;
+      e.preventDefault();
+      pendingImg = img as HTMLImageElement;
+      globalFile.click();
+    };
+    globalFile.onchange = async () => {
+      const file = globalFile.files?.[0];
+      globalFile.value = "";
+      if (!file || !pendingImg) return;
+      const dataUrl = await readImageAsDataUrl(file);
+      pendingImg.src = dataUrl;
+      pendingImg.removeAttribute("srcset");
+      // find owning block and save
+      const owner = pendingImg.closest(`[${EDITABLE_ATTR}]`) as HTMLElement | null;
+      pendingImg = null;
+      if (!owner) return;
+      const idx = Number(owner.getAttribute(EDITABLE_ATTR));
+      const heading = getHeading(owner) || `版块 ${idx + 1}`;
+      const html = cleanAdminChrome(owner);
+      const saved = savedByOrder.get(idx);
+      if (saved) {
+        await supabase.from("posts").update({ body: html, title: heading, updated_at: new Date().toISOString() }).eq("id", saved.id);
+      } else {
+        await supabase.from("posts").insert({ page: page as any, sort_order: idx, title: heading, body: html } as any);
+      }
       await loadSaved();
       setRevision((r) => r + 1);
     };
+    doc.addEventListener("contextmenu", onContext);
+
+    const persistOrder = async (currentBlocks: HTMLElement[]) => {
+      // Save complete order: for any block at index i, store its current outerHTML under sort_order=i
+      const all = currentBlocks.map((el, i) => ({
+        i,
+        html: cleanAdminChrome(el),
+        title: getHeading(el) || `版块 ${i + 1}`,
+      }));
+      // Delete existing for this page then re-insert; simplest & matches indices reliably
+      await supabase.from("posts").delete().eq("page", page as any);
+      if (all.length > 0) {
+        await supabase.from("posts").insert(
+          all.map((b) => ({ page: page as any, sort_order: b.i, title: b.title, body: b.html })) as any
+        );
+      }
+      await loadSaved();
+      setRevision((r) => r + 1);
+    };
+
+    let dragSrc: HTMLElement | null = null;
 
     blocks.forEach((sec, idx) => {
       sec.setAttribute(EDITABLE_ATTR, String(idx));
       if (doc.defaultView?.getComputedStyle(sec).position === "static") sec.style.position = "relative";
 
+      // Drag handle (top-left) — admin always-on, block-level reorder
+      const handle = doc.createElement("div");
+      handle.setAttribute(ADMIN_ATTR, "handle");
+      handle.draggable = true;
+      handle.title = "按住拖动以重排版块";
+      handle.innerHTML = "⇕ 拖动排序";
+      handle.style.cssText = "position:absolute;top:8px;left:8px;z-index:9999;font:600 12px/1 system-ui,sans-serif;padding:7px 11px;border:1px solid #d4d4d4;border-radius:7px;background:#fffffff2;color:#111;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,.10);user-select:none;";
+      handle.addEventListener("dragstart", (e) => {
+        dragSrc = sec;
+        sec.style.opacity = "0.5";
+        e.dataTransfer?.setData("text/plain", String(idx));
+        if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
+      });
+      handle.addEventListener("dragend", () => { sec.style.opacity = ""; });
+      sec.addEventListener("dragover", (e) => {
+        if (!dragSrc || dragSrc === sec) return;
+        e.preventDefault();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+        sec.style.boxShadow = "inset 0 4px 0 #047857";
+      });
+      sec.addEventListener("dragleave", () => { sec.style.boxShadow = ""; });
+      sec.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        sec.style.boxShadow = "";
+        if (!dragSrc || dragSrc === sec) return;
+        const r = sec.getBoundingClientRect();
+        if (e.clientY < r.top + r.height / 2) sec.before(dragSrc);
+        else sec.after(dragSrc);
+        dragSrc = null;
+        await persistOrder(pickBlocks(doc));
+      });
+      sec.appendChild(handle);
+
+      // Edit button (top-right)
       const btn = doc.createElement("button");
       btn.setAttribute(ADMIN_ATTR, "edit");
       btn.type = "button";
       btn.textContent = "✏ 编辑";
-      btn.style.cssText =
-        "position:absolute;top:8px;right:8px;z-index:40;font:600 12px/1 system-ui,sans-serif;padding:7px 11px;border:1px solid #d4d4d4;border-radius:7px;background:#fffffff2;color:#111;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.10);";
-      btn.onclick = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
+      btn.style.cssText = "position:absolute;top:8px;right:8px;z-index:9999;font:600 12px/1 system-ui,sans-serif;padding:7px 11px;border:1px solid #d4d4d4;border-radius:7px;background:#fffffff2;color:#111;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.10);";
+      btn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         startVisualEdit({
           doc,
           block: sec,
           showDelete: true,
-          onMove: async (direction) => {
-            const liveBlocks = pickBlocks(doc);
-            const currentIndex = liveBlocks.indexOf(sec);
-            const target = liveBlocks[currentIndex + direction];
-            if (!target) return;
-            if (direction < 0) target.before(sec);
-            else target.after(sec);
-            await persistOrder(pickBlocks(doc));
-          },
           onSave: async (html) => {
-            const saved = savedByOrder.get(idx);
             const heading = getHeading(sec) || `版块 ${idx + 1}`;
+            const saved = savedByOrder.get(idx);
             if (saved) {
               await supabase.from("posts").update({ body: html, title: heading, updated_at: new Date().toISOString() }).eq("id", saved.id);
             } else {
-              await supabase.from("posts").insert({
-                page: page as any,
-                sort_order: idx,
-                title: heading,
-                body: html,
-              } as any);
+              await supabase.from("posts").insert({ page: page as any, sort_order: idx, title: heading, body: html } as any);
             }
             await loadSaved();
             setRevision((r) => r + 1);
@@ -552,38 +524,20 @@ export function MockFrame({ src, title, page }: Props) {
     const addBtn = doc.createElement("button");
     addBtn.type = "button";
     addBtn.textContent = "+ 添加新内容区块";
-    addBtn.style.cssText =
-      "width:100%;padding:20px;border:2px dashed rgba(4,120,87,.45);border-radius:10px;background:#fffef9;color:#065f46;font:600 16px/1 ui-serif,Georgia,serif;cursor:pointer;";
+    addBtn.style.cssText = "width:100%;padding:20px;border:2px dashed rgba(4,120,87,.45);border-radius:10px;background:#fffef9;color:#065f46;font:600 16px/1 ui-serif,Georgia,serif;cursor:pointer;";
     addBtn.onclick = () => {
       const main = (doc.querySelector("main") ?? doc.body) as HTMLElement;
       const newIdx = pickBlocks(doc).length;
       const sec = doc.createElement("section");
       sec.style.cssText = "position:relative;max-width:960px;margin:48px auto;padding:32px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;";
-      sec.innerHTML =
-        "<h2 style=\"font:600 28px/1.3 ui-serif,Georgia,serif;margin:0 0 12px;color:#065f46;\">新版块标题</h2><p style=\"font:400 16px/1.7 system-ui,sans-serif;color:#374151;margin:0;\">在此输入正文内容，可继续添加标题、图片、卡片或列表。</p>";
+      sec.innerHTML = "<h2 style=\"font:600 28px/1.3 ui-serif,Georgia,serif;margin:0 0 12px;color:#065f46;\">新版块标题</h2><p style=\"font:400 16px/1.7 system-ui,sans-serif;color:#374151;margin:0;\">在此输入正文内容。</p>";
       main.appendChild(sec);
       sec.scrollIntoView({ behavior: "smooth", block: "center" });
       startVisualEdit({
-        doc,
-        block: sec,
-        showDelete: true,
-        onMove: async (direction) => {
-          const liveBlocks = pickBlocks(doc);
-          const currentIndex = liveBlocks.indexOf(sec);
-          const target = liveBlocks[currentIndex + direction];
-          if (!target) return;
-          if (direction < 0) target.before(sec);
-          else target.after(sec);
-          await persistOrder(pickBlocks(doc));
-        },
+        doc, block: sec, showDelete: true,
         onSave: async (html) => {
           const heading = getHeading(sec) || `版块 ${newIdx + 1}`;
-          await supabase.from("posts").insert({
-            page: page as any,
-            sort_order: newIdx,
-            title: heading,
-            body: html,
-          } as any);
+          await supabase.from("posts").insert({ page: page as any, sort_order: newIdx, title: heading, body: html } as any);
           await loadSaved();
           setRevision((r) => r + 1);
         },
@@ -598,6 +552,7 @@ export function MockFrame({ src, title, page }: Props) {
     return () => {
       ro.disconnect();
       cancelAnimationFrame(raf);
+      doc.removeEventListener("contextmenu", onContext);
     };
   }, [isAdmin, page, savedByOrder, loadSaved]);
 
@@ -605,27 +560,16 @@ export function MockFrame({ src, title, page }: Props) {
     const iframe = iframeRef.current;
     if (!iframe) return;
     let cleanup: (() => void) | void;
-    const run = () => {
-      cleanup?.();
-      cleanup = decorate();
-    };
+    const run = () => { cleanup?.(); cleanup = decorate(); };
     iframe.addEventListener("load", run);
     if (iframe.contentDocument?.readyState === "complete") run();
-    return () => {
-      iframe.removeEventListener("load", run);
-      cleanup?.();
-    };
+    return () => { iframe.removeEventListener("load", run); cleanup?.(); };
   }, [decorate, revision]);
 
   return (
     <SiteShell>
-      <iframe
-        ref={iframeRef}
-        src={src}
-        title={title}
-        className="w-full border-0 bg-white"
-        style={{ height }}
-      />
+      <iframe ref={iframeRef} src={src} title={title} className="w-full border-0 bg-white" style={{ height }} />
+      {afterFrame}
     </SiteShell>
   );
 }
