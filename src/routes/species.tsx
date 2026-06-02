@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SiteShell } from "@/components/SiteShell";
-import { ContentPage } from "@/components/ContentPage";
+import { MockFrame } from "@/components/MockFrame";
 
 export const Route = createFileRoute("/species")({
   head: () => ({
@@ -9,9 +8,5 @@ export const Route = createFileRoute("/species")({
       { name: "description", content: "北然基地与周边土地的多物种生命记录。" },
     ],
   }),
-  component: () => (
-    <SiteShell>
-      <ContentPage page="species" />
-    </SiteShell>
-  ),
+  component: () => <MockFrame src="/mock/species.html" title="多物种共生" page="species" />,
 });
