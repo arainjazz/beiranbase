@@ -112,6 +112,53 @@ function ensureFrameResponsive(doc: Document) {
   doc.head.appendChild(style);
 }
 
+function makeNotionSection(doc: Document) {
+  const sec = doc.createElement("section");
+  sec.style.cssText = "position:relative;max-width:980px;margin:48px auto;padding:34px 28px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;";
+  sec.innerHTML = `
+    <h2 style="font:600 30px/1.25 ui-serif,Georgia,serif;margin:0 0 14px;color:#065f46;">无标题</h2>
+    <p style="font:400 17px/1.8 system-ui,sans-serif;color:#374151;margin:0;min-height:120px;">输入“/”添加标题、图片或卡片，也可以直接输入正文。</p>
+  `;
+  return sec;
+}
+
+function createImageContextMenu(doc: Document, opts: {
+  onReplace: (img: HTMLImageElement) => void;
+  onResize?: (img: HTMLImageElement, delta: number) => void;
+}) {
+  doc.querySelectorAll(`[${ADMIN_ATTR}="image-menu"]`).forEach((el) => el.remove());
+  const menu = doc.createElement("div");
+  menu.setAttribute(ADMIN_ATTR, "image-menu");
+  menu.setAttribute("contenteditable", "false");
+  menu.style.cssText = "position:fixed;z-index:100000;display:none;min-width:150px;padding:6px;background:#fff;border:1px solid #d1d5db;border-radius:9px;box-shadow:0 12px 28px rgba(0,0,0,.2);font:500 13px/1 system-ui,sans-serif;";
+  let target: HTMLImageElement | null = null;
+  const item = (label: string, fn: () => void) => {
+    const b = doc.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.style.cssText = "display:block;width:100%;padding:10px 12px;border:0;border-radius:7px;background:transparent;color:#111827;text-align:left;cursor:pointer;";
+    b.onmouseenter = () => { b.style.background = "#f3f4f6"; };
+    b.onmouseleave = () => { b.style.background = "transparent"; };
+    b.onclick = () => { fn(); hide(); };
+    return b;
+  };
+  const hide = () => { menu.style.display = "none"; target = null; };
+  menu.appendChild(item("替换图片", () => { if (target) opts.onReplace(target); }));
+  menu.appendChild(item("放大图片", () => { if (target) opts.onResize?.(target, 120); }));
+  menu.appendChild(item("缩小图片", () => { if (target) opts.onResize?.(target, -120); }));
+  doc.body.appendChild(menu);
+  const show = (img: HTMLImageElement, x: number, y: number) => {
+    target = img;
+    menu.style.display = "block";
+    const win = doc.defaultView;
+    const left = win ? Math.min(x, win.innerWidth - 168) : x;
+    const top = win ? Math.min(y, win.innerHeight - 132) : y;
+    menu.style.left = `${Math.max(8, left)}px`;
+    menu.style.top = `${Math.max(8, top)}px`;
+  };
+  return { menu, show, hide };
+}
+
 function startVisualEdit(opts: {
   doc: Document;
   block: HTMLElement;
