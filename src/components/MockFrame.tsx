@@ -807,9 +807,7 @@ export function MockFrame({ src, title, page, afterFrame }: Props) {
     addBtn.onclick = () => {
       const main = (doc.querySelector("main") ?? doc.body) as HTMLElement;
       const newIdx = pickBlocks(doc).length;
-      const sec = doc.createElement("section");
-      sec.style.cssText = "position:relative;max-width:960px;margin:48px auto;padding:32px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;";
-      sec.innerHTML = "<h2 style=\"font:600 28px/1.3 ui-serif,Georgia,serif;margin:0 0 12px;color:#065f46;\">新版块标题</h2><p style=\"font:400 16px/1.7 system-ui,sans-serif;color:#374151;margin:0;\">在此输入正文内容。</p>";
+      const sec = makeNotionSection(doc);
       main.appendChild(sec);
       sec.scrollIntoView({ behavior: "smooth", block: "center" });
       startVisualEdit({
@@ -829,9 +827,12 @@ export function MockFrame({ src, title, page, afterFrame }: Props) {
 
     resize();
     return () => {
-      ro.disconnect();
+      mo.disconnect();
       cancelAnimationFrame(raf);
+      doc.removeEventListener("load", resize, true);
       doc.removeEventListener("contextmenu", onContext);
+      doc.removeEventListener("click", closeImageMenu);
+      imageMenu.menu.remove();
     };
   }, [isAdmin, page, savedByOrder, loadSaved]);
 
