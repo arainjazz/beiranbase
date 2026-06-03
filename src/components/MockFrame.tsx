@@ -547,7 +547,7 @@ function startVisualEdit(opts: {
     if (!img) return;
     e.preventDefault();
     selectNode(img as HTMLImageElement);
-    setTimeout(() => fileInput.click(), 0);
+    fileInput.click();
   };
   block.addEventListener("click", onClick);
   block.addEventListener("keyup", onKey);
