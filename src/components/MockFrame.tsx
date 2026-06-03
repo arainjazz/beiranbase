@@ -125,9 +125,11 @@ function startVisualEdit(opts: {
   const original = block.outerHTML;
   let selectedNode: HTMLElement = firstEditableChild(block);
   let selectedImage: HTMLImageElement | null = null;
+  let dragNode: HTMLElement | null = null;
   let saving = false;
+  const cleanupFns: Array<() => void> = [];
 
-  doc.querySelectorAll(`[${ADMIN_ATTR}="toolbar"], [${ADMIN_ATTR}="nodebar"]`).forEach((el) => el.remove());
+  doc.querySelectorAll(`[${ADMIN_ATTR}="toolbar"], [${ADMIN_ATTR}="nodebar"], [${ADMIN_ATTR}="resize"]`).forEach((el) => el.remove());
   block.querySelectorAll(`[${ADMIN_ATTR}]`).forEach((el) => el.remove());
   block.contentEditable = "true";
   block.classList.add("lov-editing");
@@ -140,6 +142,20 @@ function startVisualEdit(opts: {
   });
   block.focus();
 
+  const editableChildren = () =>
+    (Array.from(block.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,figure,img,video,ul,ol,table,article,div")) as HTMLElement[])
+      .filter((el) => el !== block && !el.closest(`[${ADMIN_ATTR}]`) && block.contains(el));
+
+  const closestEditableNode = (target: EventTarget | null) => {
+    const raw = target instanceof HTMLElement ? target : null;
+    if (!raw || raw.closest(`[${ADMIN_ATTR}]`)) return selectedNode ?? firstEditableChild(block);
+    const img = raw.closest("img") as HTMLElement | null;
+    if (img && block.contains(img)) return img;
+    const preferred = raw.closest("h1,h2,h3,h4,p,li,blockquote,figure,ul,ol,table,article,div") as HTMLElement | null;
+    if (preferred && preferred !== block && block.contains(preferred) && !preferred.hasAttribute(ADMIN_ATTR)) return preferred;
+    return childForTarget(block, raw);
+  };
+
   const style = doc.createElement("style");
   style.setAttribute(ADMIN_ATTR, "toolbar");
   style.textContent = `
@@ -147,6 +163,7 @@ function startVisualEdit(opts: {
     .lov-editing ::selection { background:rgba(4,120,87,.22); }
     .lov-selected-node { outline:2px solid rgba(4,120,87,.55) !important; outline-offset:4px !important; }
     .lov-editing img { cursor:context-menu; }
+    [${ADMIN_ATTR}] { box-sizing:border-box !important; }
   `;
   doc.head.appendChild(style);
 
@@ -161,8 +178,9 @@ function startVisualEdit(opts: {
     block.querySelectorAll(".lov-selected-node").forEach((el) => el.classList.remove("lov-selected-node"));
     selectedNode = node ?? firstEditableChild(block);
     selectedImage = selectedNode instanceof HTMLImageElement ? selectedNode : selectedNode.querySelector("img");
+    selectedNode.draggable = false;
     selectedNode.classList.add("lov-selected-node");
-    moveNodebar();
+    moveChrome();
   };
 
   const insertAfterSelected = (el: HTMLElement) => {
@@ -194,17 +212,32 @@ function startVisualEdit(opts: {
 
   const toolbar = doc.createElement("div");
   toolbar.setAttribute(ADMIN_ATTR, "toolbar");
-  toolbar.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;gap:5px;flex-wrap:wrap;align-items:center;padding:8px;background:#111827;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,.25);font:500 12px/1 system-ui,sans-serif;max-width:96vw;";
+  toolbar.setAttribute("contenteditable", "false");
+  toolbar.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;gap:5px;flex-wrap:wrap;align-items:center;padding:8px;background:#111827;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,.25);font:500 12px/1 system-ui,sans-serif;max-width:min(760px,96vw);";
 
   const nodebar = doc.createElement("div");
   nodebar.setAttribute(ADMIN_ATTR, "nodebar");
-  nodebar.style.cssText = "position:absolute;z-index:99998;display:flex;gap:4px;padding:5px;background:#fff;border:1px solid #d1d5db;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.16);font:500 12px/1 system-ui,sans-serif;";
+  nodebar.setAttribute("contenteditable", "false");
+  nodebar.style.cssText = "position:fixed;z-index:99998;display:flex;gap:4px;padding:5px;background:#fff;border:1px solid #d1d5db;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.16);font:500 12px/1 system-ui,sans-serif;max-width:96vw;overflow:auto;";
 
-  function moveNodebar() {
+  const resizeHandle = doc.createElement("div");
+  resizeHandle.setAttribute(ADMIN_ATTR, "resize");
+  resizeHandle.setAttribute("contenteditable", "false");
+  resizeHandle.title = "拖动缩放图片/模块";
+  resizeHandle.style.cssText = "position:fixed;z-index:99997;width:16px;height:16px;border-radius:5px;background:#047857;border:2px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.25);cursor:nwse-resize;display:none;";
+
+  function moveChrome() {
     if (!win || !selectedNode.isConnected) return;
     const rect = selectedNode.getBoundingClientRect();
-    nodebar.style.left = `${Math.max(8, rect.left + win.scrollX)}px`;
-    nodebar.style.top = `${Math.max(8, rect.top + win.scrollY - 38)}px`;
+    const toolbarTop = rect.top > 76 ? Math.max(8, rect.top - 62) : Math.min(win.innerHeight - 52, rect.bottom + 12);
+    toolbar.style.top = `${toolbarTop}px`;
+    toolbar.style.left = `${Math.min(Math.max(rect.left + rect.width / 2, 170), win.innerWidth - 170)}px`;
+    nodebar.style.left = `${Math.min(Math.max(rect.left, 8), Math.max(8, win.innerWidth - nodebar.offsetWidth - 8))}px`;
+    nodebar.style.top = `${Math.max(8, Math.min(win.innerHeight - 48, rect.top - 42))}px`;
+    const canResize = selectedNode instanceof HTMLImageElement || selectedNode.querySelector("img") || ["DIV", "FIGURE", "ARTICLE"].includes(selectedNode.tagName);
+    resizeHandle.style.display = canResize ? "block" : "none";
+    resizeHandle.style.left = `${Math.min(win.innerWidth - 24, rect.right - 8)}px`;
+    resizeHandle.style.top = `${Math.min(win.innerHeight - 24, rect.bottom - 8)}px`;
   }
 
   const mkBtn = (label: string, title: string, fn: () => void, accent?: string) => {
@@ -228,15 +261,42 @@ function startVisualEdit(opts: {
     return b;
   };
 
+  const dragHandle = mkNodeBtn("⇕ 拖动", "按住拖动模块到新区位", () => {});
+  dragHandle.draggable = true;
+  dragHandle.style.cursor = "grab";
+  dragHandle.addEventListener("dragstart", (e) => {
+    dragNode = selectedNode;
+    selectedNode.style.opacity = "0.45";
+    e.dataTransfer?.setData("text/plain", "lov-node");
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
+  });
+  dragHandle.addEventListener("dragend", () => {
+    if (dragNode) dragNode.style.opacity = "";
+    dragNode = null;
+    moveChrome();
+  });
+
   const cmd = (command: string, value?: string) => {
     block.focus();
     doc.execCommand(command, false, value);
+    moveChrome();
+  };
+
+  const scaleSelected = (delta: number) => {
+    const rect = selectedNode.getBoundingClientRect();
+    const parentRect = (selectedNode.parentElement ?? block).getBoundingClientRect();
+    const next = Math.max(96, Math.min(parentRect.width, rect.width + delta));
+    selectedNode.style.width = `${next}px`;
+    selectedNode.style.maxWidth = "100%";
+    if (selectedNode instanceof HTMLImageElement) selectedNode.style.height = "auto";
+    else selectedNode.style.display = selectedNode.style.display || "inline-block";
+    moveChrome();
   };
 
   const makeParagraph = () => {
     const p = doc.createElement("p");
     p.textContent = "输入新的正文内容…";
-    p.style.cssText = "margin:16px 0;line-height:1.75;";
+    p.style.cssText = "margin:16px 0;line-height:1.75;min-height:96px;";
     insertAfterSelected(p);
   };
   const makeHeading = () => {
@@ -262,8 +322,10 @@ function startVisualEdit(opts: {
   };
 
   const finish = () => {
+    cleanupFns.splice(0).forEach((fn) => fn());
     toolbar.remove();
     nodebar.remove();
+    resizeHandle.remove();
     style.remove();
     fileInput.remove();
     block.contentEditable = "false";
@@ -315,8 +377,11 @@ function startVisualEdit(opts: {
     }, "#b91c1c"));
   }
 
+  nodebar.appendChild(dragHandle);
   nodebar.appendChild(mkNodeBtn("+ 正文", "新增正文", makeParagraph));
   nodebar.appendChild(mkNodeBtn("+ 图", "新增图片", () => fileInput.click()));
+  nodebar.appendChild(mkNodeBtn("缩小", "缩小模块/图片", () => scaleSelected(-80)));
+  nodebar.appendChild(mkNodeBtn("放大", "放大模块/图片", () => scaleSelected(80)));
   nodebar.appendChild(mkNodeBtn("↑", "上移", () => moveSelected(-1)));
   nodebar.appendChild(mkNodeBtn("↓", "下移", () => moveSelected(1)));
   nodebar.appendChild(mkNodeBtn("删", "删除", () => {
@@ -327,18 +392,89 @@ function startVisualEdit(opts: {
 
   doc.body.appendChild(toolbar);
   doc.body.appendChild(nodebar);
+  doc.body.appendChild(resizeHandle);
 
-  block.addEventListener("click", (e) => selectNode(childForTarget(block, e.target)));
-  block.addEventListener("keyup", moveNodebar);
-  block.addEventListener("mouseup", moveNodebar);
-  block.addEventListener("contextmenu", (e) => {
+  let resizeState: { startX: number; startY: number; startW: number; startH: number; ratio: number } | null = null;
+  const onResizeMove = (e: MouseEvent) => {
+    if (!resizeState) return;
+    e.preventDefault();
+    const parentRect = (selectedNode.parentElement ?? block).getBoundingClientRect();
+    const nextW = Math.max(96, Math.min(parentRect.width, resizeState.startW + e.clientX - resizeState.startX));
+    selectedNode.style.width = `${nextW}px`;
+    selectedNode.style.maxWidth = "100%";
+    if (selectedNode instanceof HTMLImageElement || selectedNode.querySelector("img")) {
+      selectedNode.style.height = "auto";
+    } else {
+      const nextH = Math.max(64, resizeState.startH + e.clientY - resizeState.startY);
+      selectedNode.style.minHeight = `${nextH}px`;
+      selectedNode.style.display = selectedNode.style.display || "inline-block";
+    }
+    moveChrome();
+  };
+  const stopResize = () => { resizeState = null; };
+  resizeHandle.addEventListener("mousedown", (e) => {
+    const rect = selectedNode.getBoundingClientRect();
+    resizeState = { startX: e.clientX, startY: e.clientY, startW: rect.width, startH: rect.height, ratio: rect.width / Math.max(1, rect.height) };
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  doc.addEventListener("mousemove", onResizeMove);
+  doc.addEventListener("mouseup", stopResize);
+  cleanupFns.push(() => doc.removeEventListener("mousemove", onResizeMove));
+  cleanupFns.push(() => doc.removeEventListener("mouseup", stopResize));
+
+  const onBlockDragOver = (e: DragEvent) => {
+    if (!dragNode) return;
+    const target = closestEditableNode(e.target);
+    if (!target || target === dragNode || target.contains(dragNode)) return;
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+    target.style.boxShadow = "inset 0 3px 0 #047857";
+  };
+  const onBlockDragLeave = (e: DragEvent) => {
+    const target = closestEditableNode(e.target);
+    if (target && target !== dragNode) target.style.boxShadow = "";
+  };
+  const onBlockDrop = (e: DragEvent) => {
+    if (!dragNode) return;
+    const target = closestEditableNode(e.target);
+    editableChildren().forEach((el) => { el.style.boxShadow = ""; });
+    if (!target || target === dragNode || target.contains(dragNode)) return;
+    e.preventDefault();
+    const rect = target.getBoundingClientRect();
+    if (e.clientY < rect.top + rect.height / 2) target.before(dragNode);
+    else target.after(dragNode);
+    selectNode(dragNode);
+  };
+  block.addEventListener("dragover", onBlockDragOver);
+  block.addEventListener("dragleave", onBlockDragLeave);
+  block.addEventListener("drop", onBlockDrop);
+  cleanupFns.push(() => block.removeEventListener("dragover", onBlockDragOver));
+  cleanupFns.push(() => block.removeEventListener("dragleave", onBlockDragLeave));
+  cleanupFns.push(() => block.removeEventListener("drop", onBlockDrop));
+
+  const onClick = (e: MouseEvent) => selectNode(closestEditableNode(e.target));
+  const onKey = () => moveChrome();
+  const onMouse = () => moveChrome();
+  const onContextMenu = (e: MouseEvent) => {
     const img = e.target instanceof HTMLElement ? e.target.closest("img") : null;
     if (!img) return;
     e.preventDefault();
     selectNode(img as HTMLImageElement);
-    fileInput.click();
-  });
-  win?.addEventListener("scroll", moveNodebar, { passive: true });
+    setTimeout(() => fileInput.click(), 0);
+  };
+  block.addEventListener("click", onClick);
+  block.addEventListener("keyup", onKey);
+  block.addEventListener("mouseup", onMouse);
+  block.addEventListener("contextmenu", onContextMenu);
+  win?.addEventListener("scroll", moveChrome, { passive: true });
+  win?.addEventListener("resize", moveChrome, { passive: true });
+  cleanupFns.push(() => block.removeEventListener("click", onClick));
+  cleanupFns.push(() => block.removeEventListener("keyup", onKey));
+  cleanupFns.push(() => block.removeEventListener("mouseup", onMouse));
+  cleanupFns.push(() => block.removeEventListener("contextmenu", onContextMenu));
+  cleanupFns.push(() => win?.removeEventListener("scroll", moveChrome));
+  cleanupFns.push(() => win?.removeEventListener("resize", moveChrome));
   selectNode(firstEditableChild(block));
 }
 
