@@ -267,6 +267,11 @@ function startVisualEdit(opts: {
   nodebar.setAttribute("contenteditable", "false");
   nodebar.style.cssText = "position:fixed;z-index:99998;display:flex;gap:4px;padding:5px;background:#fff;border:1px solid #d1d5db;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.16);font:500 12px/1 system-ui,sans-serif;max-width:96vw;overflow:auto;";
 
+  const slashMenu = doc.createElement("div");
+  slashMenu.setAttribute(ADMIN_ATTR, "toolbar");
+  slashMenu.setAttribute("contenteditable", "false");
+  slashMenu.style.cssText = "position:fixed;z-index:100000;display:none;width:220px;padding:7px;background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 16px 34px rgba(0,0,0,.2);font:500 13px/1 system-ui,sans-serif;";
+
   const resizeHandle = doc.createElement("div");
   resizeHandle.setAttribute(ADMIN_ATTR, "resize");
   resizeHandle.setAttribute("contenteditable", "false");
@@ -306,6 +311,22 @@ function startVisualEdit(opts: {
     b.onmousedown = (e) => e.preventDefault();
     b.onclick = fn;
     return b;
+  };
+
+  const addSlashItem = (label: string, fn: () => void) => {
+    const b = doc.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.style.cssText = "display:block;width:100%;padding:11px 12px;border:0;border-radius:7px;background:transparent;color:#111827;text-align:left;cursor:pointer;";
+    b.onmousedown = (e) => e.preventDefault();
+    b.onmouseenter = () => { b.style.background = "#f3f4f6"; };
+    b.onmouseleave = () => { b.style.background = "transparent"; };
+    b.onclick = () => {
+      if (selectedNode.textContent?.trim() === "/") selectedNode.textContent = "";
+      slashMenu.style.display = "none";
+      fn();
+    };
+    slashMenu.appendChild(b);
   };
 
   const dragHandle = mkNodeBtn("⇕ 拖动", "按住拖动模块到新区位", () => {});
@@ -372,6 +393,7 @@ function startVisualEdit(opts: {
     cleanupFns.splice(0).forEach((fn) => fn());
     toolbar.remove();
     nodebar.remove();
+    slashMenu.remove();
     resizeHandle.remove();
     style.remove();
     fileInput.remove();
@@ -437,8 +459,14 @@ function startVisualEdit(opts: {
     selectNode(next ?? firstEditableChild(block));
   }));
 
+  addSlashItem("标题", makeHeading);
+  addSlashItem("正文段落", makeParagraph);
+  addSlashItem("图片", () => fileInput.click());
+  addSlashItem("内容卡片", makeCard);
+
   doc.body.appendChild(toolbar);
   doc.body.appendChild(nodebar);
+  doc.body.appendChild(slashMenu);
   doc.body.appendChild(resizeHandle);
 
   let resizeState: { startX: number; startY: number; startW: number; startH: number; ratio: number } | null = null;
@@ -501,7 +529,18 @@ function startVisualEdit(opts: {
   cleanupFns.push(() => block.removeEventListener("drop", onBlockDrop));
 
   const onClick = (e: MouseEvent) => selectNode(closestEditableNode(e.target));
-  const onKey = () => moveChrome();
+  const showSlashMenu = () => {
+    if (!win) return;
+    const rect = selectedNode.getBoundingClientRect();
+    slashMenu.style.display = "block";
+    slashMenu.style.left = `${Math.min(Math.max(rect.left, 8), win.innerWidth - 236)}px`;
+    slashMenu.style.top = `${Math.min(Math.max(rect.bottom + 8, 8), win.innerHeight - 190)}px`;
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === "/") setTimeout(showSlashMenu, 0);
+    else if (e.key === "Escape") slashMenu.style.display = "none";
+    moveChrome();
+  };
   const onMouse = () => moveChrome();
   const onContextMenu = (e: MouseEvent) => {
     const img = e.target instanceof HTMLElement ? e.target.closest("img") : null;
