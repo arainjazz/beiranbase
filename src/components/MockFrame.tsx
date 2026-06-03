@@ -652,7 +652,7 @@ export function MockFrame({ src, title, page, afterFrame }: Props) {
       img.style.height = "auto";
     };
     const imageMenu = createImageContextMenu(doc, {
-      onReplace: (img) => { pendingImg = img; setTimeout(() => globalFile.click(), 0); },
+      onReplace: (img) => { pendingImg = img; globalFile.click(); },
       onResize: async (img, delta) => {
         resizeImage(img, delta);
         const owner = img.closest(`[${EDITABLE_ATTR}]`) as HTMLElement | null;
