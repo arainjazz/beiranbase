@@ -602,6 +602,7 @@ export function MockFrame({ src, title, page, afterFrame }: Props) {
     };
 
     doc.querySelectorAll(`[${ADMIN_ATTR}]`).forEach((el) => el.remove());
+    ensureFrameResponsive(doc);
 
     let blocks = pickBlocks(doc);
     if (savedByOrder.size > 0) {
@@ -626,11 +627,12 @@ export function MockFrame({ src, title, page, afterFrame }: Props) {
     }
 
     resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(doc.body);
+    const mo = new MutationObserver(resize);
+    mo.observe(doc.body, { childList: true, subtree: true, attributes: true, characterData: true });
+    doc.addEventListener("load", resize, true);
 
     if (!isAdmin || !page) {
-      return () => { ro.disconnect(); cancelAnimationFrame(raf); };
+      return () => { mo.disconnect(); doc.removeEventListener("load", resize, true); cancelAnimationFrame(raf); };
     }
 
     // Global right-click → replace image (admin always-on)
@@ -641,14 +643,40 @@ export function MockFrame({ src, title, page, afterFrame }: Props) {
     globalFile.style.display = "none";
     doc.body.appendChild(globalFile);
     let pendingImg: HTMLImageElement | null = null;
+    const resizeImage = (img: HTMLImageElement, delta: number) => {
+      const rect = img.getBoundingClientRect();
+      const parentRect = (img.parentElement ?? doc.body).getBoundingClientRect();
+      const next = Math.max(120, Math.min(parentRect.width, rect.width + delta));
+      img.style.width = `${next}px`;
+      img.style.maxWidth = "100%";
+      img.style.height = "auto";
+    };
+    const imageMenu = createImageContextMenu(doc, {
+      onReplace: (img) => { pendingImg = img; setTimeout(() => globalFile.click(), 0); },
+      onResize: async (img, delta) => {
+        resizeImage(img, delta);
+        const owner = img.closest(`[${EDITABLE_ATTR}]`) as HTMLElement | null;
+        if (!owner) return;
+        const idx = Number(owner.getAttribute(EDITABLE_ATTR));
+        const heading = getHeading(owner) || `版块 ${idx + 1}`;
+        const html = cleanAdminChrome(owner);
+        const saved = savedByOrder.get(idx);
+        if (saved) await supabase.from("posts").update({ body: html, title: heading, updated_at: new Date().toISOString() }).eq("id", saved.id);
+        else await supabase.from("posts").insert({ page: page as any, sort_order: idx, title: heading, body: html } as any);
+        await loadSaved();
+      },
+    });
     const onContext = (e: MouseEvent) => {
       const img = e.target instanceof HTMLElement ? e.target.closest("img") : null;
       if (!img) return;
       // skip if inside an edit-active block (handled by editor's own listener)
       if ((img as HTMLElement).closest(".lov-editing")) return;
       e.preventDefault();
-      pendingImg = img as HTMLImageElement;
-      globalFile.click();
+      imageMenu.show(img as HTMLImageElement, e.clientX, e.clientY);
+    };
+    const closeImageMenu = (e: MouseEvent) => {
+      if (e.target instanceof HTMLElement && e.target.closest(`[${ADMIN_ATTR}="image-menu"]`)) return;
+      imageMenu.hide();
     };
     globalFile.onchange = async () => {
       const file = globalFile.files?.[0];
@@ -674,6 +702,7 @@ export function MockFrame({ src, title, page, afterFrame }: Props) {
       setRevision((r) => r + 1);
     };
     doc.addEventListener("contextmenu", onContext);
+    doc.addEventListener("click", closeImageMenu);
 
     const persistOrder = async (currentBlocks: HTMLElement[]) => {
       // Save complete order: for any block at index i, store its current outerHTML under sort_order=i
