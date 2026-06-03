@@ -73,8 +73,10 @@ function cleanAdminChrome(el: HTMLElement) {
     if ((node as HTMLElement).hasAttribute(ADMIN_ATTR)) node.remove();
     else (node as HTMLElement).removeAttribute("contenteditable");
   });
+  clone.removeAttribute(EDITABLE_ATTR);
   clone.removeAttribute("contenteditable");
   clone.removeAttribute("draggable");
+  clone.querySelectorAll(`[${EDITABLE_ATTR}]`).forEach((node) => node.removeAttribute(EDITABLE_ATTR));
   clone.querySelectorAll("[draggable]").forEach((node) => node.removeAttribute("draggable"));
   ["outline", "outlineOffset", "caretColor", "cursor", "userSelect"].forEach((k) => {
     (clone.style as any)[k] = "";
@@ -82,6 +84,32 @@ function cleanAdminChrome(el: HTMLElement) {
   clone.classList.remove("lov-editing");
   clone.querySelectorAll(".lov-selected-node").forEach((n) => n.classList.remove("lov-selected-node"));
   return clone.outerHTML;
+}
+
+function ensureFrameResponsive(doc: Document) {
+  doc.querySelectorAll(`[${ADMIN_ATTR}="responsive-style"]`).forEach((el) => el.remove());
+  const style = doc.createElement("style");
+  style.setAttribute(ADMIN_ATTR, "responsive-style");
+  style.textContent = `
+    html { -webkit-text-size-adjust: 100%; }
+    body { overflow-x: hidden; }
+    img, picture, video, canvas, svg { max-width: 100% !important; height: auto !important; }
+    img { object-fit: cover; }
+    * { box-sizing: border-box; }
+    @media (max-width: 768px) {
+      body { font-size: clamp(15px, 3.9vw, 17px) !important; line-height: 1.7 !important; }
+      main, section, article, header, footer, div { max-width: 100% !important; }
+      section, article { padding-left: clamp(16px, 5vw, 24px) !important; padding-right: clamp(16px, 5vw, 24px) !important; }
+      h1 { font-size: clamp(30px, 9vw, 48px) !important; line-height: 1.12 !important; letter-spacing: 0 !important; }
+      h2 { font-size: clamp(24px, 7vw, 36px) !important; line-height: 1.2 !important; letter-spacing: 0 !important; }
+      h3 { font-size: clamp(20px, 5.5vw, 28px) !important; line-height: 1.25 !important; letter-spacing: 0 !important; }
+      p, li, a, button, input, textarea { font-size: clamp(15px, 3.9vw, 17px) !important; }
+      [class*="grid"], [style*="grid-template-columns"], [style*="display: grid"], [style*="display:grid"] { grid-template-columns: 1fr !important; }
+      [style*="display: flex"], [style*="display:flex"] { flex-wrap: wrap !important; }
+      img { border-radius: min(12px, 3vw) !important; }
+    }
+  `;
+  doc.head.appendChild(style);
 }
 
 function startVisualEdit(opts: {
