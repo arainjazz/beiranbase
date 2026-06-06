@@ -74,17 +74,28 @@ function ensureFrameResponsive(doc: Document) {
     img, picture, video, canvas, svg { max-width: 100% !important; height: auto !important; }
     img { object-fit: cover; }
     * { box-sizing: border-box; }
+    /* tablet */
+    @media (max-width: 1024px) {
+      [class*="lg:grid-cols-3"], [class*="md:grid-cols-3"] { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+      [class*="lg:grid-cols-4"], [class*="md:grid-cols-4"] { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+      section { padding-left: clamp(20px, 4vw, 40px) !important; padding-right: clamp(20px, 4vw, 40px) !important; }
+      h1 { font-size: clamp(34px, 6vw, 56px) !important; line-height: 1.15 !important; }
+    }
+    /* mobile */
     @media (max-width: 768px) {
       body { font-size: clamp(15px, 3.9vw, 17px) !important; line-height: 1.7 !important; }
       main, section, article, header, footer, div { max-width: 100% !important; }
-      section, article { padding-left: clamp(16px, 5vw, 24px) !important; padding-right: clamp(16px, 5vw, 24px) !important; }
-      h1 { font-size: clamp(30px, 9vw, 48px) !important; line-height: 1.12 !important; }
-      h2 { font-size: clamp(24px, 7vw, 36px) !important; line-height: 1.2 !important; }
-      h3 { font-size: clamp(20px, 5.5vw, 28px) !important; line-height: 1.25 !important; }
+      section, article { padding-left: clamp(16px, 5vw, 24px) !important; padding-right: clamp(16px, 5vw, 24px) !important; padding-top: clamp(40px, 10vw, 64px) !important; padding-bottom: clamp(40px, 10vw, 64px) !important; }
+      h1 { font-size: clamp(28px, 8vw, 44px) !important; line-height: 1.15 !important; }
+      h2 { font-size: clamp(22px, 6.2vw, 32px) !important; line-height: 1.22 !important; }
+      h3 { font-size: clamp(18px, 5vw, 24px) !important; line-height: 1.3 !important; }
       p, li, a, button, input, textarea { font-size: clamp(15px, 3.9vw, 17px) !important; }
-      [class*="grid"], [style*="grid-template-columns"], [style*="display: grid"], [style*="display:grid"] { grid-template-columns: 1fr !important; }
+      [class*="grid-cols-"], [style*="grid-template-columns"], [style*="display: grid"], [style*="display:grid"] { grid-template-columns: 1fr !important; gap: clamp(16px, 4vw, 24px) !important; }
       [style*="display: flex"], [style*="display:flex"] { flex-wrap: wrap !important; }
       img { border-radius: min(12px, 3vw) !important; }
+      /* full-viewport hero often breaks on mobile */
+      [class*="h-screen"] { height: auto !important; min-height: 78vh !important; }
+      [class*="min-h-["] { min-height: 60vh !important; }
     }
   `;
   doc.head.appendChild(style);
