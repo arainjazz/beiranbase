@@ -20,16 +20,16 @@ export function SiteNav() {
 
   return (
     <nav className="border-b border-neutral-300 bg-white/95 backdrop-blur">
-      <div className="flex items-center gap-2 px-4 py-3 md:px-6 md:py-4 min-h-[72px] md:min-h-[88px]">
-        <Link to="/" className="mr-2 md:mr-6 flex items-center gap-3">
-          <img src="/logo.png" alt="北然生态基地" className="h-12 w-12 md:h-16 md:w-16 rounded-sm object-contain" />
+      <div className="flex items-center gap-2 px-4 py-3 lg:px-6 lg:py-4 min-h-[72px] lg:min-h-[88px]">
+        <Link to="/" className="mr-2 lg:mr-6 flex items-center gap-3">
+          <img src="/logo.png" alt="北然生态基地" className="h-12 w-12 lg:h-16 lg:w-16 rounded-sm object-contain" />
           <span className="flex flex-col leading-tight">
             <span className="font-serif text-base font-semibold text-emerald-900">北然生态基地</span>
             <span className="text-[9px] uppercase tracking-widest text-emerald-700">BeiRanEcoBase</span>
           </span>
         </Link>
 
-        <div className="hidden md:flex flex-wrap items-center gap-1">
+        <div className="hidden lg:flex flex-wrap items-center gap-1">
           {NAV.map((n) => (
             <Link
               key={n.to}
@@ -53,7 +53,7 @@ export function SiteNav() {
               <Link
                 to="/login"
                 search={{ request: "admin", mode: "signup" }}
-                className="hidden md:flex flex-col items-center rounded border border-emerald-700 px-3 py-1.5 leading-tight text-emerald-800 transition hover:bg-emerald-50"
+                className="hidden lg:flex flex-col items-center rounded border border-emerald-700 px-3 py-1.5 leading-tight text-emerald-800 transition hover:bg-emerald-50"
               >
                 <span className="text-xs">注册管理员</span>
                 <span className="text-[9px] uppercase opacity-80">Admin Sign-up</span>
@@ -61,7 +61,7 @@ export function SiteNav() {
               <Link
                 to="/login"
                 search={{ request: "subscriber", mode: "signup" }}
-                className="flex flex-col items-center rounded bg-emerald-700 px-3 py-1.5 leading-tight text-white transition hover:bg-emerald-800"
+                className="hidden sm:flex flex-col items-center rounded bg-emerald-700 px-3 py-1.5 leading-tight text-white transition hover:bg-emerald-800"
               >
                 <span className="text-xs">注册</span>
                 <span className="text-[9px] uppercase opacity-80">Sign up</span>
@@ -77,7 +77,7 @@ export function SiteNav() {
             </>
           ) : (
             <>
-              <div className="hidden md:flex flex-col items-end leading-tight px-2">
+              <div className="hidden xl:flex flex-col items-end leading-tight px-2">
                 <span className="text-xs text-neutral-700">{user.email}</span>
                 <span className="text-[9px] uppercase tracking-wide text-emerald-700">
                   {roles.join(" · ") || "待审批 / pending"}
@@ -86,7 +86,7 @@ export function SiteNav() {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="hidden md:flex flex-col items-center rounded bg-emerald-900 px-3 py-1.5 leading-tight text-white hover:bg-emerald-950"
+                  className="hidden lg:flex flex-col items-center rounded bg-emerald-900 px-3 py-1.5 leading-tight text-white hover:bg-emerald-950"
                 >
                   <span className="text-xs">管理后台</span>
                   <span className="text-[9px] uppercase opacity-80">Admin</span>
@@ -97,7 +97,7 @@ export function SiteNav() {
                   await signOut();
                   navigate({ to: "/" });
                 }}
-                className="flex flex-col items-center rounded border border-neutral-300 px-3 py-1.5 leading-tight text-neutral-700 hover:bg-neutral-100"
+                className="hidden sm:flex flex-col items-center rounded border border-neutral-300 px-3 py-1.5 leading-tight text-neutral-700 hover:bg-neutral-100"
               >
                 <span className="text-xs">退出</span>
                 <span className="text-[9px] uppercase opacity-80">Log out</span>
@@ -109,7 +109,7 @@ export function SiteNav() {
             type="button"
             aria-label="菜单"
             onClick={() => setMenuOpen((v) => !v)}
-            className="md:hidden ml-1 inline-flex h-10 w-10 items-center justify-center rounded border border-neutral-300 text-neutral-700 hover:bg-neutral-100"
+            className="lg:hidden ml-1 inline-flex h-10 w-10 items-center justify-center rounded border border-neutral-300 text-neutral-700 hover:bg-neutral-100"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               {menuOpen ? (
@@ -130,7 +130,7 @@ export function SiteNav() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden border-t border-neutral-200 bg-white px-2 py-2 flex flex-col">
+        <div className="lg:hidden border-t border-neutral-200 bg-white px-2 py-2 flex flex-col">
           {NAV.map((n) => (
             <Link
               key={n.to}
@@ -156,6 +156,7 @@ export function SiteNav() {
           )}
         </div>
       )}
+
     </nav>
   );
 }
