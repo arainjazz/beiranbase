@@ -3,7 +3,7 @@ import "@blocknote/mantine/style.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
-import { locales } from "@blocknote/core";
+import { en, zh } from "@blocknote/core/locales";
 
 /**
  * Build a bilingual dictionary by deep-merging zh + en.
@@ -11,8 +11,6 @@ import { locales } from "@blocknote/core";
  * Array fields (aliases) are concatenated and de-duplicated.
  */
 function buildBilingualDict(): any {
-  const zh: any = (locales as any).zh;
-  const en: any = (locales as any).en;
   const merge = (z: any, e: any): any => {
     if (typeof z === "string" && typeof e === "string") {
       if (z === e) return z;
