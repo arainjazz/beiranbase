@@ -125,12 +125,12 @@
 </nav>
 </header>
 <!-- Hero Section -->
-<section class="relative flex items-center overflow-hidden pt-20" style="height: clamp(560px, 70vw, 820px);">
+<section class="relative flex items-end md:items-center overflow-hidden" style="height: clamp(560px, 70vw, 820px);">
 <div class="absolute inset-0 z-0" id="hero-carousel">
 <img class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 opacity-100" src="/hero/h1.jpg" alt="北然生态基地"/>
 <img class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 opacity-0" src="/hero/h2.jpg" alt="湿地植物"/>
 <img class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 opacity-0" src="/hero/h3.jpg" alt="水族生态"/>
-<div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/75 md:bg-gradient-to-r md:from-black/60 md:via-black/30 md:to-transparent"></div>
 <script>
 (function(){
   if (window.__heroTimer) return;
@@ -145,19 +145,19 @@
 })();
 </script>
 </div>
-<div class="relative z-10 px-6 md:px-margin-desktop max-w-container-max mx-auto w-full">
+<div class="relative z-10 px-6 md:px-margin-desktop max-w-container-max mx-auto w-full pb-10 md:pb-0">
 <div class="max-w-2xl text-white">
-<h1 class="font-display text-5xl md:text-6xl mb-6 leading-[1.1] font-bold">
+<h1 class="font-display text-5xl md:text-6xl mb-4 leading-[1.1] font-bold">
                 揭秘自然奥秘，<br/>与大地共同生长。
             </h1>
-<p class="font-body text-lg md:text-xl mb-10 opacity-90 max-w-lg leading-relaxed">
+<p class="font-body text-base md:text-xl mb-8 opacity-90 leading-relaxed">
                 在北然生态基地，我们连接传统智慧与现代科学，通过沉浸式的农场体验，为您开启一段探索生命多样性与可持续生活的旅程。
             </p>
-<div class="flex gap-4">
-<a href="/story" target="_top" class="bg-emerald-700 hover:bg-emerald-800 text-white px-10 py-4 rounded-xl font-label text-sm flex items-center gap-2 transition-all">
+<div class="flex flex-col sm:flex-row gap-3">
+<a href="/story" target="_top" class="bg-emerald-700 hover:bg-emerald-800 text-white px-8 py-3 rounded-xl font-label text-sm flex items-center justify-center gap-2 transition-all">
                     了解农场 <span class="material-symbols-outlined text-sm">arrow_forward</span>
 </a>
-<span class="bg-white/10 backdrop-blur-md text-white/70 border border-white/30 px-10 py-4 rounded-xl font-label text-sm cursor-not-allowed select-none">
+<span class="bg-white/10 backdrop-blur-md text-white/70 border border-white/30 px-8 py-3 rounded-xl font-label text-sm cursor-not-allowed select-none flex items-center justify-center">
                     基地简介
                 </span>
 </div>
