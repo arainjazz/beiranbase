@@ -21,6 +21,10 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        /* 轮播关键样式内联 —— Tailwind CDN 加载失败时仍可正常显示 */
+        /* ID+class 特异度 > MockFrame 注入的 img{height:auto!important} 的元素选择器特异度，所以能覆盖 */
+        #hero-carousel { position: absolute; inset: 0; z-index: 0; }
+        #hero-carousel .hero-slide { position: absolute; inset: 0; width: 100% !important; height: 100% !important; object-fit: cover !important; transition: opacity 1s; }
     </style>
 <script id="tailwind-config">
         tailwind.config = {
@@ -121,7 +125,7 @@
 </nav>
 </header>
 <!-- Hero Section -->
-<section class="relative h-screen min-h-[700px] flex items-center overflow-hidden pt-20">
+<section class="relative flex items-center overflow-hidden pt-20" style="height: clamp(560px, 70vw, 820px);">
 <div class="absolute inset-0 z-0" id="hero-carousel">
 <img class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 opacity-100" src="/hero/h1.jpg" alt="北然生态基地"/>
 <img class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 opacity-0" src="/hero/h2.jpg" alt="湿地植物"/>
@@ -129,9 +133,11 @@
 <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
 <script>
 (function(){
+  if (window.__heroTimer) return;
   var slides = document.querySelectorAll('#hero-carousel .hero-slide');
+  if (!slides || slides.length < 2) return;
   var i = 0;
-  setInterval(function(){
+  window.__heroTimer = setInterval(function(){
     slides[i].style.opacity = '0';
     i = (i + 1) % slides.length;
     slides[i].style.opacity = '1';
