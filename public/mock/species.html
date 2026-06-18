@@ -133,6 +133,24 @@
             border-radius: 0 !important;
             z-index: 1;
         }
+        /* Per-species gallery thumbnails */
+        .gallery-thumb {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+            border: none;
+            padding: 0;
+        }
+        .gallery-thumb:hover { opacity: 1; }
+        .gallery-thumb.is-active {
+            opacity: 1;
+            outline: 2px solid #094cb2;
+            outline-offset: -2px;
+            z-index: 2;
+        }
+        /* Lightbox */
+        #lightbox { display: none; }
+        #lightbox.open { display: flex; }
     </style>
 </head>
 <body class="bg-surface text-on-surface overflow-x-hidden">
@@ -292,79 +310,102 @@
 </div>
 </section>
 </main>
+<!-- Lightbox -->
+<div id="lightbox" class="fixed inset-0 z-[60] bg-black/90 items-center justify-center" role="dialog" aria-modal="true" aria-label="物种图片放大查看">
+<button id="lb-close" class="absolute top-4 right-4 text-white/80 hover:text-white p-2 z-10" aria-label="关闭"><span class="material-symbols-outlined text-4xl">close</span></button>
+<button id="lb-prev" class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 z-10" aria-label="上一张"><span class="material-symbols-outlined text-5xl">chevron_left</span></button>
+<button id="lb-next" class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 z-10" aria-label="下一张"><span class="material-symbols-outlined text-5xl">chevron_right</span></button>
+<figure class="flex flex-col items-center gap-4 px-6 pointer-events-none">
+<img id="lb-img" class="max-h-[80vh] max-w-[92vw] object-contain shadow-2xl" alt=""/>
+<figcaption id="lb-cap" class="text-center text-white/90 font-body text-sm max-w-2xl"></figcaption>
+</figure>
+</div>
 <script>
     const FP = "https://commons.wikimedia.org/wiki/Special:FilePath/";
     const species = [
         {cn:"栗喉蜂虎", sci:"Merops philippinus", en:"Blue-tailed Bee-eater", fam:"蜂虎科 Meropidae", tag:"鸟纲",
-         file:"Blue-tailed_bee-eater_(Merops_philippinus).jpg",
+         files:["Blue-tailed_bee-eater_(Merops_philippinus).jpg","Blue-tailed bee-eater (Merops philippinus) Yala.jpg","Blue tailed bee eater with catch.jpg"],
          desc:"海南夏候鸟中最艳丽的一员，喉部栗红、体羽翠绿。常成群在沙质崖壁掘洞筑巢，于空中灵巧追捕蜻蜓、蜜蜂等飞虫。",
          data:[["分布","沿海沙地 · 农田边"],["食性","空中捕食昆虫"],["居留","夏候鸟"]]},
         {cn:"苍鹭", sci:"Ardea cinerea", en:"Grey Heron", fam:"鹭科 Ardeidae", tag:"鸟纲",
-         file:"Graureiher_Ardea_cinerea-4883.jpg",
+         files:["Graureiher_Ardea_cinerea-4883.jpg","Ardea cinerea (Grey heron) eating fish.jpg","Ardea cinerea Luc Viatour.jpg"],
          desc:"体型高大的灰色涉禽，常单脚伫立于水田、鱼塘边，颈缩成S形静候猎物。以鱼、蛙、甲壳类为食，是湿地健康的指示物种。",
          data:[["分布","水田 · 鱼塘 · 红树林"],["食性","鱼 · 蛙 · 虾"],["居留","留鸟 / 冬候鸟"]]},
         {cn:"白鹭（小白鹭）", sci:"Egretta garzetta", en:"Little Egret", fam:"鹭科 Ardeidae", tag:"鸟纲",
-         file:"Egretta_garzetta_(Little_Egret)_Kuntul_kecil.jpg",
+         files:["Egretta_garzetta_(Little_Egret)_Kuntul_kecil.jpg","Little egret (Egretta garzetta) in flight.jpg","Egretta garzetta, Keitakuen, Osaka II.jpg"],
          desc:"通体雪白、黑喙黄趾的小型鹭，繁殖期枕部生出两条飘逸蓑羽。常随水牛与农人活动，啄食被惊起的小鱼小虫。",
          data:[["分布","稻田 · 滩涂"],["食性","小鱼 · 昆虫"],["习性","集群营巢"]]},
         {cn:"池鹭", sci:"Ardeola bacchus", en:"Chinese Pond Heron", fam:"鹭科 Ardeidae", tag:"鸟纲",
-         file:"Ardeola_bacchus,_Chinese_pond_heron_-_Kaeng_Krachan_National_Park_(16253453790).jpg",
+         files:["Ardeola_bacchus,_Chinese_pond_heron_-_Kaeng_Krachan_National_Park_(16253453790).jpg","Chinese Pond Heron in Summer.jpg","Ardeola bacchus winter plumage - Laem Phak Bia.jpg"],
          desc:"繁殖期头颈栗红、背披深蓝蓑羽，停立时一身朴素，飞起时雪白双翼骤然展开，宛若“变装”。常于稻田、池塘浅水捕食。",
          data:[["分布","池塘 · 稻田"],["食性","昆虫 · 鱼虾"],["居留","夏候鸟 / 留鸟"]]},
         {cn:"家燕", sci:"Hirundo rustica", en:"Barn Swallow", fam:"燕科 Hirundinidae", tag:"鸟纲",
-         file:"Barn_Swallow_Hirundo_rustica,_Nepal.jpg",
+         files:["Barn_Swallow_Hirundo_rustica,_Nepal.jpg","Barn swallow (Hirundo rustica rustica).jpg","Barn swallow taking a bath.jpg"],
          desc:"蓝黑色背、叉形长尾，喜在农舍屋檐下以泥和草筑碗状巢。终日在田野上空疾飞掠食蚊蝇，是与人类农耕最亲近的益鸟。",
          data:[["分布","村舍 · 农田"],["食性","飞行昆虫"],["居留","夏候鸟"]]},
         {cn:"斑节对虾（黑虎虾）", sci:"Penaeus monodon", en:"Giant Tiger Prawn", fam:"对虾科 Penaeidae", tag:"甲壳",
-         file:"Penaeus_monodon.jpg",
+         files:["Penaeus_monodon.jpg","Mike the Tiger Prawn 08.20.2013 041.jpg","Freshippo tiger shrim.jpg"],
          desc:"体表具黑褐与浅色相间的虎纹斑节，是世界最大的对虾之一，可长达三十余厘米。海南沿海重要养殖与河口物种，幼体依赖红树林与河口育肥。",
          data:[["分布","河口 · 海水养殖塘"],["食性","杂食底栖"],["价值","重要水产"]]},
         {cn:"江蓠", sci:"Gracilaria sp.", en:"Gracilaria", fam:"江蓠科 Gracilariaceae", tag:"藻类",
-         file:"Red_algae_(Gracilaria_sp.)_(48737220543).jpg",
+         files:["Red_algae_(Gracilaria_sp.)_(48737220543).jpg","Gracilaria sp.jpg","Gracilaria2.JPG"],
          desc:"暗红至紫褐色的丛生海藻，是提取琼脂（寒天）的主要原料，也是鲍鱼等海产的天然饵料。在海南近岸滩涂广泛分布，兼具固碳与净水功能。",
          data:[["分布","近岸滩涂"],["用途","琼脂 · 饵料"],["生态","固碳净水"]]},
         {cn:"滴水观音（海芋）", sci:"Alocasia odora", en:"Giant Taro", fam:"天南星科 Araceae", tag:"植物",
-         file:"Alocasia_odora_(3).JPG",
+         files:["Alocasia_odora_(3).JPG","Alocasia odora in China.jpg","Alocasia odora 02.jpg"],
          desc:"叶片宽大如盾、湿润时叶尖滴水而得名。喜生于林下沟谷阴湿处，全株含草酸钙针晶，汁液有毒不可误食，常作林缘地被与景观。",
          data:[["生境","林下 · 沟谷"],["特征","大叶滴水"],["提示","全株有毒"]]},
         {cn:"苦楝", sci:"Melia azedarach", en:"Chinaberry", fam:"楝科 Meliaceae", tag:"植物",
-         file:"Melia_azedarach_flower.JPG",
+         files:["Melia_azedarach_flower.JPG","Melia azedarach in China.jpg","Melia azedarach in fiore.jpg"],
          desc:"海南乡野常见的落叶乔木，春季开淡紫色芳香小花，秋结黄色核果。木材轻软可制家具，叶与果实自古用作天然驱虫剂，是农田林网的乡土树种。",
          data:[["分布","村旁 · 田边"],["花期","春季淡紫"],["用途","木材 · 驱虫"]]},
         {cn:"水牛", sci:"Bubalus bubalis", en:"Water Buffalo", fam:"牛科 Bovidae", tag:"哺乳纲",
-         file:"Bubalus_bubalis_(water_buffalo)_bathing_in_a_rust-colored_pond_and_looking_at_viewer,_head_above_water,_Don_Det,_Laos.jpg",
+         files:["Bubalus_bubalis_(water_buffalo)_bathing_in_a_rust-colored_pond_and_looking_at_viewer,_head_above_water,_Don_Det,_Laos.jpg","Asian water buffalo (Bubalus bubalis) with cattle egret.jpg","Water buffalo (Bubalus bubalis).jpg"],
          desc:"海南传统稻作不可或缺的役畜，喜泡水降温、以粗草为食。耕作与踩踏维持水田结构，粪便回田肥土，是农田生态循环的关键一环。",
          data:[["用途","耕作役用"],["食性","草食"],["习性","喜水泥浴"]]},
         {cn:"黑山羊", sci:"Capra hircus", en:"Black Goat", fam:"牛科 Bovidae", tag:"哺乳纲",
-         file:"Black_Bengal_Goat_00812.JPG",
+         files:["Black_Bengal_Goat_00812.JPG","Black goat (Capra aegagrus hircus) at Las Guevaras, Margarita.jpg","Gorges du Verdon Goat-Rove-black 0253.jpg"],
          desc:"海南本地适应力强的家养山羊，毛色乌黑、体型紧凑，擅在坡地与灌丛间采食杂草嫩枝。是当地重要的肉用畜种，也帮助控制林下杂草。",
          data:[["用途","肉用"],["食性","灌丛杂草"],["特点","耐热耐粗"]]},
         {cn:"雷公马（变色树蜥）", sci:"Calotes versicolor", en:"Oriental Garden Lizard", fam:"鬣蜥科 Agamidae", tag:"爬行纲",
-         file:"Oriental_Garden_Lizard_-_Calotes_versicolor.jpg",
+         files:["Oriental_Garden_Lizard_-_Calotes_versicolor.jpg","Oriental garden lizard (Calotes versicolor) in a mango tree in Laos.jpg","Calotes versicolor (Oriental garden lizard).jpg"],
          desc:"海南俗称“雷公马”的树栖蜥蜴，繁殖期雄性头颈转为鲜红。善攀爬捕食昆虫，能随情绪与环境变换体色，是农田与林缘的天然害虫控制者。",
          data:[["生境","树木 · 灌丛"],["食性","昆虫"],["特征","雄性变红"]]},
         {cn:"罗非鱼", sci:"Oreochromis sp.", en:"Tilapia", fam:"丽鱼科 Cichlidae", tag:"鱼类",
-         file:"Oreochromis-niloticus-Nairobi.JPG",
+         files:["Oreochromis-niloticus-Nairobi.JPG","Oreochromis niloticus.jpg","Oreochromis niloticus at Kanchanaburi market.jpg"],
          desc:"原产非洲、现广泛养殖的淡水鱼，适应力极强，耐低氧与咸淡水，亲鱼口孵护幼。海南池塘养殖的主力品种之一；逃逸个体也可能影响本地水域生态。",
          data:[["分布","池塘 · 河流"],["食性","杂食"],["价值","主要养殖鱼"]]},
         {cn:"多管藻", sci:"Polysiphonia sp.", en:"Polysiphonia", fam:"松节藻科 Rhodomelaceae", tag:"藻类",
-         file:"Polysiphonia_cystocarp_WM.jpg",
+         files:["Polysiphonia_cystocarp_WM.jpg","Polysiphonia paniculata.jpg","Polysiphonia urceolata Helgoland.JPG"],
          desc:"由多列管状细胞组成的丝状红藻，常附生于其他海藻或礁石上。是潮间带的初级生产者与小型海洋生物的栖息微环境，也是研究红藻生活史的经典材料。",
          data:[["生境","潮间带附生"],["形态","丝状多列"],["角色","初级生产者"]]}
     ];
 
-    function card(s){
+    function thumbStrip(s){
+        if (s.files.length < 2) return "";
+        const t = s.files.map((f,j) =>
+            `<button type="button" class="gallery-thumb photo-frame flex-1 h-14${j===0?' is-active':''}" data-idx="${j}" aria-label="查看 ${s.cn} 第 ${j+1} 张">
+                <img alt="" loading="lazy" onerror="this.style.display='none'" src="${FP}${encodeURIComponent(f)}?width=240"/>
+            </button>`).join("");
+        return `<div class="gallery-thumbs flex gap-1.5 p-1.5 bg-surface-container-low">${t}</div>`;
+    }
+    function card(s, sp){
         const rows = s.data.map(d =>
             `<div class="flex justify-between border-b border-surface-container pb-1.5">
                 <span class="text-on-surface-variant font-label text-[10px] uppercase tracking-wide">${d[0]}</span>
                 <span class="text-primary font-bold text-xs text-right">${d[1]}</span>
             </div>`).join("");
-        return `<div class="species-card group flex flex-col bg-white archival-border" data-key="${(s.cn+' '+s.sci+' '+s.en+' '+s.fam).toLowerCase()}">
-            <div class="photo-frame h-64">
+        return `<div class="species-card group flex flex-col bg-white archival-border" data-sp="${sp}" data-key="${(s.cn+' '+s.sci+' '+s.en+' '+s.fam).toLowerCase()}">
+            <div class="gallery-main photo-frame h-64 cursor-zoom-in" data-cur="0" role="button" tabindex="0" aria-label="放大查看 ${s.cn} 图片">
                 <div class="photo-fallback"><span class="material-symbols-outlined text-3xl mb-1">photo_camera</span><span class="font-serif text-lg font-bold">${s.cn}</span></div>
-                <img alt="${s.cn} ${s.en}" loading="lazy" class="transition-transform duration-700 group-hover:scale-105" onerror="this.style.display='none'" src="${FP}${encodeURIComponent(s.file)}?width=700"/>
+                <img alt="${s.cn} ${s.en}" loading="lazy" class="gallery-main-img transition-transform duration-700 group-hover:scale-105" onerror="this.style.display='none'" src="${FP}${encodeURIComponent(s.files[0])}?width=800"/>
                 <div class="absolute top-4 right-4 z-10 bg-white px-3 py-1 text-[10px] font-label font-bold uppercase text-primary">${s.tag}</div>
+                <div class="absolute bottom-3 right-3 z-10 bg-black/55 text-white px-2 py-1 flex items-center gap-1 pointer-events-none">
+                    <span class="material-symbols-outlined text-sm">zoom_in</span>
+                    <span class="gallery-counter font-label text-[10px] font-bold">1/${s.files.length}</span>
+                </div>
             </div>
+            ${thumbStrip(s)}
             <div class="p-6 flex flex-col flex-1">
                 <h6 class="text-[10px] font-label text-tertiary uppercase font-bold tracking-[0.2em] mb-2">${s.fam}</h6>
                 <h3 class="text-xl font-bold text-on-background mb-1 group-hover:text-primary transition-colors">${s.cn}</h3>
@@ -377,6 +418,55 @@
 
     const grid = document.getElementById("species-cards");
     grid.innerHTML = species.map(card).join("");
+
+    // Gallery + lightbox
+    const FPq = f => `${FP}${encodeURIComponent(f)}`;
+    const lb = document.getElementById("lightbox");
+    const lbImg = document.getElementById("lb-img");
+    const lbCap = document.getElementById("lb-cap");
+    let lbFiles = [], lbPos = 0, lbMeta = {};
+    function lbShow(){
+        lbImg.src = FPq(lbFiles[lbPos]) + "?width=1400";
+        lbCap.innerHTML = `<span class="font-serif font-bold">${lbMeta.cn}</span> · <span class="italic">${lbMeta.sci}</span> &nbsp; <span class="text-white/50">${lbPos+1} / ${lbFiles.length}</span>`;
+    }
+    function lbOpen(sp, pos){
+        const s = species[sp]; if(!s) return;
+        lbFiles = s.files; lbPos = pos || 0; lbMeta = s;
+        lbShow(); lb.classList.add("open"); document.body.style.overflow = "hidden";
+    }
+    function lbClose(){ lb.classList.remove("open"); lbImg.src = ""; document.body.style.overflow = ""; }
+    function lbStep(d){ if(!lbFiles.length) return; lbPos = (lbPos + d + lbFiles.length) % lbFiles.length; lbShow(); }
+    document.getElementById("lb-close").addEventListener("click", lbClose);
+    document.getElementById("lb-prev").addEventListener("click", () => lbStep(-1));
+    document.getElementById("lb-next").addEventListener("click", () => lbStep(1));
+    lb.addEventListener("click", e => { if (e.target === lb) lbClose(); });
+    document.addEventListener("keydown", e => {
+        if (!lb.classList.contains("open")) return;
+        if (e.key === "Escape") lbClose();
+        else if (e.key === "ArrowLeft") lbStep(-1);
+        else if (e.key === "ArrowRight") lbStep(1);
+    });
+
+    function setMain(card, idx){
+        const sp = +card.dataset.sp, s = species[sp];
+        const main = card.querySelector(".gallery-main");
+        const img = card.querySelector(".gallery-main-img");
+        img.style.display = ""; img.src = FPq(s.files[idx]) + "?width=800";
+        main.dataset.cur = idx;
+        card.querySelector(".gallery-counter").textContent = (idx+1) + "/" + s.files.length;
+        card.querySelectorAll(".gallery-thumb").forEach((t,j) => t.classList.toggle("is-active", j === idx));
+    }
+    grid.addEventListener("click", e => {
+        const thumb = e.target.closest(".gallery-thumb");
+        if (thumb) { setMain(thumb.closest(".species-card"), +thumb.dataset.idx); return; }
+        const main = e.target.closest(".gallery-main");
+        if (main) lbOpen(+main.closest(".species-card").dataset.sp, +(main.dataset.cur || 0));
+    });
+    grid.addEventListener("keydown", e => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const main = e.target.closest(".gallery-main");
+        if (main) { e.preventDefault(); lbOpen(+main.closest(".species-card").dataset.sp, +(main.dataset.cur || 0)); }
+    });
 
     // Search filter
     const input = document.getElementById("species-search");
