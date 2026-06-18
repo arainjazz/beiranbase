@@ -104,299 +104,295 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* Image frame with graceful fallback: the species name sits behind the photo;
+           if the photo fails to load, the labelled placeholder remains visible. */
+        .photo-frame {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #d9e2ff 0%, #eef1f6 60%, #dcd9c8 100%);
+        }
+        .photo-frame .photo-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            z-index: 0;
+            color: #00419d;
+        }
+        .photo-frame img {
+            position: absolute !important;
+            inset: 0;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            object-fit: cover !important;
+            border-radius: 0 !important;
+            z-index: 1;
+        }
     </style>
 </head>
 <body class="bg-surface text-on-surface overflow-x-hidden">
-<!-- TopNavBar -->
-<header style="display:none" class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-outline-variant">
-<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto h-20">
-<div class="font-serif text-2xl font-bold text-primary">北然生态基地</div>
-<div class="hidden lg:flex items-center space-x-8">
-<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">首页</a>
-<a class="font-label text-sm text-primary border-b-2 border-primary pb-1" href="#">物种发现</a>
-<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">自然课程</a>
-<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">生态农法</a>
-<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">生态礼品</a>
-<a class="font-label text-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">农场故事</a>
-</div>
-<div class="flex items-center gap-4">
-<button class="material-symbols-outlined text-primary p-2">search</button>
-<button class="bg-primary text-on-primary px-6 py-2 rounded font-label text-sm uppercase tracking-wide hover:bg-primary-container transition-all">Enroll Now</button>
-</div>
-</nav>
-</header>
 <main class="pt-20">
-<!-- Intro Hero (search moved to bottom) -->
+<!-- Intro Hero -->
 <section class="relative py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-low overflow-hidden">
 <div class="max-w-container-max mx-auto relative z-10 text-center">
+<span class="font-label text-xs text-tertiary text-tracking-widest uppercase mb-3 block font-bold">Hainan Living Archive · 海南生命档案</span>
 <h1 class="text-4xl md:text-6xl font-bold text-on-background mb-6 leading-tight">多物种共生</h1>
 <p class="text-lg text-on-surface-variant max-w-2xl mx-auto mb-4 font-body leading-relaxed">
-                通过我们的生态档案馆，发现并记录栖息在这一片土地上的奇妙生命。从微小的地衣到古老的林木，每一份记录都是自然的见证。
+                从海岸滩涂到水田林缘，北然基地与周边土地上栖息着丰富的生命。我们以图文档案的方式记录这些飞鸟、游鱼、草木与家畜，呈现海南低地农田—湿地—海岸交织而成的生命网络。
             </p>
 </div>
-<div class="absolute bottom-0 right-0 w-1/3 h-full opacity-10 pointer-events-none">
-<img alt="Plant sketch" class="w-full h-full object-contain object-bottom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-QO0RiqF0Xx32U03Ts31xWDWSo4lIEJS4MeEc9JmfwmRqqbtWJfPYZAPB7b5S2nYYL36mGm9s-UDjkWCn_RPZPzOsdfu1KCtxtvowYGlp2MynSjAJHh8GV2f8musd3SAckAS4aJf0YPPoDiKe8cmvZHR9qLO1sO1wHGRrGLoIiIj8H6lA3AReePcJ7_ZwdOLIE6wyyqPwByLJ5KXu1vfqodOpMhDDHyvrb-ty_ARqFqKfr1ixKn0DckVfbY9Vj426Ory21odFxlbx"/>
-</div>
 </section>
-<!-- Species of the Week -->
+<!-- Featured Species -->
 <section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
 <div class="flex items-end justify-between mb-12 border-b border-outline-variant pb-6">
 <div>
 <span class="font-label text-xs text-tertiary text-tracking-widest uppercase mb-2 block font-bold">Featured Archive</span>
-<h2 class="text-3xl md:text-4xl font-bold text-on-background">本周推荐物种</h2>
+<h2 class="text-3xl md:text-4xl font-bold text-on-background">本期主角物种</h2>
 </div>
-<a class="flex items-center gap-2 text-primary font-label text-sm hover:underline" href="#">查看往期 <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+<a class="flex items-center gap-2 text-primary font-label text-sm hover:underline" href="#species-grid">浏览全部物种 <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
 <!-- Main Image Card -->
-<div class="md:col-span-8 relative rounded-none overflow-hidden group">
-<img alt="Bengal Tiger" class="w-full h-[500px] md:h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAubrk-nUDnrC-31vXJj7_CJ8FHQIcGXqfu0AJXjfTTJKaBjWtu0MoLuxQkVpR0w46d7Sp8YkNunw-U7O4a2A_y0wyqzWa_ZkBzta-MSjK1OxD5XOpyjw5YJArcltymLdUQsAZVCLpUdHXyZoOMJu6Toamh7BQzPZP_LQJcFq_K7jFb6rMiMtZqTWz6fN7H8oo3nMW2xdYJeC-964mHsxIzE2DR2nY9yvWyfrCACNMdZFjmvz-7IOc_pItW5-Kw6lEpsZDWsY56VFhu"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8 md:p-16">
-<span class="bg-primary text-on-primary w-fit px-3 py-1 rounded-sm mb-4 font-label text-xs uppercase tracking-widest">近危濒危</span>
-<h3 class="text-3xl md:text-5xl font-bold text-white mb-4">孟加拉虎 <span class="text-white/60 text-2xl font-normal italic">(Panthera tigris)</span></h3>
-<p class="text-white/80 text-lg max-w-xl font-body leading-relaxed">森林中的顶级捕食者，不仅是生态系统平衡的关键，更是亚洲文化的象征。本周我们将深入探讨其迁徙路径与保育现状。</p>
+<div class="md:col-span-8 relative overflow-hidden group photo-frame h-[500px] md:h-[600px]">
+<div class="photo-fallback"><span class="material-symbols-outlined text-5xl mb-2">photo_camera</span><span class="font-serif text-2xl font-bold">栗喉蜂虎</span></div>
+<img alt="栗喉蜂虎 Blue-tailed Bee-eater" class="transition-transform duration-1000 group-hover:scale-105" loading="lazy" onerror="this.style.display='none'" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blue-tailed_bee-eater_(Merops_philippinus).jpg?width=1200"/>
+<div class="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8 md:p-16 pointer-events-none">
+<span class="bg-primary text-on-primary w-fit px-3 py-1 rounded-sm mb-4 font-label text-xs uppercase tracking-widest">夏候鸟 · 鸟纲</span>
+<h3 class="text-3xl md:text-5xl font-bold text-white mb-4">栗喉蜂虎 <span class="text-white/60 text-2xl font-normal italic">(Merops philippinus)</span></h3>
+<p class="text-white/80 text-lg max-w-xl font-body leading-relaxed">海南夏季最艳丽的候鸟之一。喉部栗红、体羽翠绿，成群在沙质崖壁掘洞筑巢，于空中追捕蜻蜓与蜂类，被誉为"中国最美小鸟"之一。</p>
 </div>
 </div>
 <!-- Detail Cards Stack -->
 <div class="md:col-span-4 flex flex-col gap-10">
 <div class="flex-1 bg-white p-8 archival-border flex flex-col justify-between">
 <div>
-<h4 class="text-xl font-bold text-on-background mb-6 border-b border-outline-variant pb-2">栖息地分析</h4>
+<h4 class="text-xl font-bold text-on-background mb-6 border-b border-outline-variant pb-2">档案速览 Field Data</h4>
 <div class="space-y-4">
 <div class="flex justify-between border-b border-surface-container pb-2">
-<span class="text-on-surface-variant font-label text-xs uppercase">主要分布</span>
-<span class="text-primary font-bold text-sm">南亚季风林</span>
+<span class="text-on-surface-variant font-label text-xs uppercase">科 属</span>
+<span class="text-primary font-bold text-sm">蜂虎科 Meropidae</span>
 </div>
 <div class="flex justify-between border-b border-surface-container pb-2">
-<span class="text-on-surface-variant font-label text-xs uppercase">平均领地</span>
-<span class="text-primary font-bold text-sm">20-100 km²</span>
+<span class="text-on-surface-variant font-label text-xs uppercase">栖息生境</span>
+<span class="text-primary font-bold text-sm">沿海沙地 · 农田边</span>
 </div>
 <div class="flex justify-between border-b border-surface-container pb-2">
-<span class="text-on-surface-variant font-label text-xs uppercase">主要食物</span>
-<span class="text-primary font-bold text-sm">有蹄类哺乳动物</span>
+<span class="text-on-surface-variant font-label text-xs uppercase">食 性</span>
+<span class="text-primary font-bold text-sm">空中捕食昆虫</span>
 </div>
 </div>
 </div>
-<p class="text-sm text-on-surface-variant italic mt-8 border-l-2 border-primary pl-4 font-body">“自然的生存者，丛林的守护神。”</p>
+<p class="text-sm text-on-surface-variant italic mt-8 border-l-2 border-primary pl-4 font-body">"夏日掠过田野的一抹翠绿与栗红。"</p>
 </div>
 <div class="flex-1 bg-primary text-on-primary p-8 relative overflow-hidden flex flex-col justify-center">
-<h4 class="text-2xl font-bold mb-4 relative z-10">保育计划</h4>
-<p class="text-sm mb-8 opacity-90 leading-relaxed relative z-10">加入我们的“丛林之眼”志愿者项目，通过红外相机协助科研人员追踪这些壮丽生物的足迹。</p>
-<button class="bg-white text-primary px-6 py-2 rounded-none font-label text-xs font-bold uppercase tracking-widest relative z-10 w-fit hover:bg-surface transition-colors">立即参与</button>
-<span class="material-symbols-outlined absolute -right-8 -bottom-8 text-[160px] opacity-10 rotate-12" style="font-variation-settings: 'FILL' 1;">pets</span>
+<h4 class="text-2xl font-bold mb-4 relative z-10">基地观察 Field Notes</h4>
+<p class="text-sm mb-8 opacity-90 leading-relaxed relative z-10">每年四至九月，蜂虎在基地周边的沙坡集群繁殖。它们捕食大量农田飞虫，是天然的"飞行害虫控制员"。</p>
+<span class="material-symbols-outlined absolute -right-8 -bottom-8 text-[160px] opacity-10 rotate-12" style="font-variation-settings: 'FILL' 1;">flutter_dash</span>
 </div>
 </div>
 </div>
 </section>
-<!-- Category Grid -->
+<!-- Category Overview -->
 <section class="py-24 bg-surface-container">
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
 <div class="text-center mb-16">
 <span class="font-label text-xs text-primary font-bold uppercase tracking-[0.3em] mb-4 block">Archive Classification</span>
-<h2 class="text-3xl md:text-4xl font-bold text-on-background mb-4">按类目浏览档案</h2>
+<h2 class="text-3xl md:text-4xl font-bold text-on-background mb-4">按类目浏览</h2>
 <div class="w-20 h-1 bg-primary mx-auto mb-6"></div>
-<p class="text-on-surface-variant max-w-xl mx-auto font-body">系统分类涵盖了从肉眼难辨的微观真菌到参天古木，带你建立完整的自然知识图谱。</p>
+<p class="text-on-surface-variant max-w-xl mx-auto font-body">本期档案收录 14 个海南本地物种，横跨飞鸟、家畜、鱼虾、草木与海藻，勾勒农田与海岸的生命图谱。</p>
 </div>
 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-<!-- Category 1 -->
-<a class="group bg-white archival-border p-8 hover:border-primary transition-all duration-300 text-center" href="#">
-<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">grass</span>
+<div class="group bg-white archival-border p-8 text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6"><span class="material-symbols-outlined text-primary">flutter_dash</span></div>
+<h5 class="text-lg font-bold text-on-background mb-2">鸟纲 Birds</h5>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">5 种 · 蜂虎/苍鹭/白鹭/池鹭/燕</p>
 </div>
-<h5 class="text-lg font-bold text-on-background mb-2">植物学 Botany</h5>
-<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">1,248 种已记录</p>
-</a>
-<!-- Category 2 -->
-<a class="group bg-white archival-border p-8 hover:border-primary transition-all duration-300 text-center" href="#">
-<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">flutter_dash</span>
+<div class="group bg-white archival-border p-8 text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6"><span class="material-symbols-outlined text-primary">pets</span></div>
+<h5 class="text-lg font-bold text-on-background mb-2">哺乳纲 Mammals</h5>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">2 种 · 水牛 / 黑山羊</p>
 </div>
-<h5 class="text-lg font-bold text-on-background mb-2">鸟类学 Birds</h5>
-<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">456 种已记录</p>
-</a>
-<!-- Category 3 -->
-<a class="group bg-white archival-border p-8 hover:border-primary transition-all duration-300 text-center" href="#">
-<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">pest_control_rodent</span>
+<div class="group bg-white archival-border p-8 text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6"><span class="material-symbols-outlined text-primary">set_meal</span></div>
+<h5 class="text-lg font-bold text-on-background mb-2">鱼虾水产 Aquatic</h5>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">2 种 · 黑虎虾 / 罗非鱼</p>
 </div>
-<h5 class="text-lg font-bold text-on-background mb-2">昆虫学 Insects</h5>
-<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">3,892 种已记录</p>
-</a>
-<!-- Category 4 -->
-<a class="group bg-white archival-border p-8 hover:border-primary transition-all duration-300 text-center" href="#">
-<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">pets</span>
+<div class="group bg-white archival-border p-8 text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6"><span class="material-symbols-outlined text-primary">grass</span></div>
+<h5 class="text-lg font-bold text-on-background mb-2">植物 Plants</h5>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">2 种 · 滴水观音 / 苦楝</p>
 </div>
-<h5 class="text-lg font-bold text-on-background mb-2">哺乳类 Mammals</h5>
-<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">112 种已记录</p>
-</a>
-<!-- Row 2 -->
-<a class="group bg-white archival-border p-8 hover:border-primary transition-all duration-300 text-center" href="#">
-<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">set_meal</span>
+<div class="group bg-white archival-border p-8 text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6"><span class="material-symbols-outlined text-primary">waves</span></div>
+<h5 class="text-lg font-bold text-on-background mb-2">海藻 Algae</h5>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">2 种 · 江蓠 / 多管藻</p>
 </div>
-<h5 class="text-lg font-bold text-on-background mb-2">水生类 Aquatic</h5>
-<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">284 种已记录</p>
-</a>
-<a class="group bg-white archival-border p-8 hover:border-primary transition-all duration-300 text-center" href="#">
-<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">forest</span>
+<div class="group bg-white archival-border p-8 text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6"><span class="material-symbols-outlined text-primary">bug_report</span></div>
+<h5 class="text-lg font-bold text-on-background mb-2">爬行纲 Reptiles</h5>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">1 种 · 雷公马</p>
 </div>
-<h5 class="text-lg font-bold text-on-background mb-2">菌类 Fungi</h5>
-<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">865 种已记录</p>
-</a>
-<a class="group bg-white archival-border p-8 hover:border-primary transition-all duration-300 text-center" href="#">
-<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
-<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">bug_report</span>
+<div class="group bg-white archival-border p-8 text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container mx-auto flex items-center justify-center mb-6"><span class="material-symbols-outlined text-primary">eco</span></div>
+<h5 class="text-lg font-bold text-on-background mb-2">生境 Habitat</h5>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">农田 · 湿地 · 海岸</p>
 </div>
-<h5 class="text-lg font-bold text-on-background mb-2">爬行类 Reptiles</h5>
-<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">73 种已记录</p>
-</a>
-<a class="group bg-primary archival-border p-8 hover:bg-primary-container transition-all duration-300 text-center flex flex-col justify-center items-center" href="#">
+<a class="group bg-primary archival-border p-8 text-center flex flex-col justify-center items-center hover:bg-primary-container transition-all" href="#species-grid">
 <span class="material-symbols-outlined text-white mb-2 text-3xl">explore</span>
-<p class="font-label text-xs text-white uppercase font-bold tracking-[0.2em]">浏览全部类目</p>
+<p class="font-label text-xs text-white uppercase font-bold tracking-[0.2em]">查看全部 14 种</p>
 </a>
 </div>
 </div>
 </section>
-<!-- Gamified Progress Section -->
-<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-<div class="bg-primary text-on-primary p-8 md:p-20 flex flex-col md:flex-row gap-16 items-center relative overflow-hidden">
-<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
-<div class="flex-1 relative z-10">
-<span class="font-label text-xs text-white/70 uppercase tracking-[0.4em] mb-6 block font-bold">Personal Expedition</span>
-<h2 class="text-4xl md:text-5xl font-bold text-white mb-8">您的生态发现旅程</h2>
-<p class="text-lg text-white/90 mb-10 font-body leading-relaxed">您目前已发现并记录了本地 124 种物种中的 <span class="text-white font-bold underline underline-offset-4 decoration-2">42</span> 种。每解锁一个新的物种，您都将获得一枚独特的数字勋章并获得参与线下保育研讨会的资格。</p>
-<div class="mb-10">
-<div class="flex justify-between font-label text-xs text-white/80 uppercase tracking-widest mb-3">
-<span>Discovery Rank: 先遣考察员</span>
-<span>34% Complete</span>
-</div>
-<div class="w-full h-1 bg-white/20 rounded-full overflow-hidden">
-<div class="w-[34%] h-full bg-white transition-all duration-1000 ease-out"></div>
-</div>
-</div>
-<div class="flex flex-wrap gap-6">
-<button class="bg-white text-primary px-10 py-3 rounded-none font-label text-xs font-bold uppercase tracking-widest hover:bg-surface transition-all">继续探索</button>
-<button class="border border-white/40 text-white px-10 py-3 rounded-none font-label text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-all">查看我的勋章</button>
-</div>
-</div>
-<div class="flex-1 grid grid-cols-2 gap-6 relative z-10">
-<div class="bg-white/5 backdrop-blur-xl p-8 archival-border border-white/20">
-<div class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6">
-<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">eco</span>
-</div>
-<p class="font-bold text-white mb-1">首次植物鉴定</p>
-<span class="text-[10px] font-label text-white/60 uppercase tracking-tighter">2023.10.12</span>
-</div>
-<div class="bg-white/5 backdrop-blur-xl p-8 archival-border border-white/20">
-<div class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6">
-<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
-</div>
-<p class="font-bold text-white mb-1">晨间观鸟达人</p>
-<span class="text-[10px] font-label text-white/60 uppercase tracking-tighter">2023.11.05</span>
-</div>
-<div class="bg-white/5 backdrop-blur-xl p-8 archival-border border-white/20">
-<div class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6">
-<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">water_drop</span>
-</div>
-<p class="font-bold text-white mb-1">水生发现者</p>
-<span class="text-[10px] font-label text-white/60 uppercase tracking-tighter">2024.01.15</span>
-</div>
-<div class="bg-white/5 backdrop-blur-xl p-8 archival-border border-white/20 border-dashed flex flex-col items-center justify-center opacity-40">
-<span class="material-symbols-outlined text-white text-2xl mb-2">lock</span>
-<p class="font-label text-[10px] text-white uppercase tracking-widest">Next Unlock</p>
-</div>
-</div>
-</div>
-</section>
-<!-- Dynamic Grid Section -->
-<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<!-- Species Grid -->
+<section id="species-grid" class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
 <div class="flex items-center justify-between mb-16">
-<h2 class="text-3xl font-bold text-on-background">最新档案入库</h2>
+<h2 class="text-3xl font-bold text-on-background">物种图文档案</h2>
 <div class="h-[1px] flex-1 bg-outline-variant mx-8 hidden md:block"></div>
-<div class="font-label text-xs uppercase text-on-surface-variant font-bold tracking-widest">Recent Records</div>
+<div class="font-label text-xs uppercase text-on-surface-variant font-bold tracking-widest">14 Records</div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-<!-- Entry 1 -->
-<div class="group">
-<div class="h-80 relative overflow-hidden mb-6">
-<img alt="Rare Orchid" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFBYC7aoYBDcwTNzfo46rrhsW-D1NvSwU1Mj13swyb0efafJ9DBj8lzqGJAja7XzlRHivtLCSnAMRNs7HFtzIUflUxxVcpT8Hl1ilTQd14v0LNRy5WPAUspQJLSlY6SwZ0weRS5Sa65WmTtSO_03Y18cbVSCFeZZwe8LTtMGSZvHoDr3XrChp9xy-Y5aCnNjZftvc-2h14Te_JgkSIZts2iqmsReKlXQItQPX9YWvheq8vrz5FAXVz1QggFJSO7BUCVgTHrSrjVGHW"/>
-<div class="absolute top-4 right-4 bg-white px-3 py-1 text-[10px] font-label font-bold uppercase text-primary">植物界</div>
+<div id="species-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12"></div>
+</section>
+<!-- Ecological Web -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="bg-primary text-on-primary p-8 md:p-20 relative overflow-hidden">
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
+<div class="relative z-10 max-w-3xl">
+<span class="font-label text-xs text-white/70 uppercase tracking-[0.4em] mb-6 block font-bold">Ecological Web · 生命网络</span>
+<h2 class="text-3xl md:text-5xl font-bold text-white mb-8">一片土地，环环相扣</h2>
+<p class="text-lg text-white/90 mb-6 font-body leading-relaxed">这些物种并非孤立存在。海岸的<span class="font-bold underline underline-offset-4 decoration-2">江蓠与多管藻</span>作为初级生产者，养育着<span class="font-bold underline underline-offset-4 decoration-2">黑虎虾</span>等河口生物；水田与池塘里的<span class="font-bold underline underline-offset-4 decoration-2">罗非鱼</span>，又成为<span class="font-bold underline underline-offset-4 decoration-2">苍鹭、白鹭、池鹭</span>的食物。</p>
+<p class="text-lg text-white/90 mb-6 font-body leading-relaxed"><span class="font-bold underline underline-offset-4 decoration-2">蜂虎与家燕</span>在空中清除农田飞虫，<span class="font-bold underline underline-offset-4 decoration-2">雷公马</span>在林缘捕食爬虫害虫；<span class="font-bold underline underline-offset-4 decoration-2">水牛与黑山羊</span>以耕作和采食维持着田地与坡地的结构，粪肥回田滋养草木。</p>
+<p class="text-lg text-white/90 font-body leading-relaxed"><span class="font-bold underline underline-offset-4 decoration-2">苦楝与滴水观音</span>提供荫蔽与栖息，连接起飞鸟、昆虫与土壤——农田、湿地与海岸由此织成一张完整的生命之网。</p>
 </div>
-<div>
-<h6 class="text-[10px] font-label text-tertiary uppercase font-bold tracking-[0.2em] mb-3">Orchidaceae</h6>
-<h3 class="text-xl font-bold text-on-background mb-3 group-hover:text-primary transition-colors">高山紫罗兰兰花</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed line-clamp-2 font-body">一种极其罕见的高山附生兰，仅在海拔2500米以上的原始森林中发现...</p>
-<div class="mt-6 pt-4 border-t border-outline-variant flex justify-between items-center text-[10px] font-label uppercase tracking-tighter text-on-surface-variant">
-<span>BY @EcoExplorer</span>
-<span>2 HOURS AGO</span>
-</div>
-</div>
-</div>
-<!-- Entry 2 -->
-<div class="group">
-<div class="h-80 relative overflow-hidden mb-6">
-<img alt="Blue Bird" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYOdpvjulkDAYm25Uh2jGKxEP5cirS2X1w0k-Nkd7mcWOP8QsykRhLOEbq88Nd8AThO0T3DFXjWvXWzz37D1VV__cTz8bctp4-_a-ZjMJM0uonHc1iIdFxFaQm1EEg2IyaEwx2la135rWxsHjQSMDIUig7aJG-SWi7DqFvOVSch0PgnqrSp_A25sNB-ABa-u1zrB9N7yiq-rvFtWgmlawLMCt6Q1Fwb1SqSLvXJOJhS0jckX9eGZ49U9IPEcyucl7hV0gv1BSeiLbB"/>
-<div class="absolute top-4 right-4 bg-white px-3 py-1 text-[10px] font-label font-bold uppercase text-primary">鸟纲</div>
-</div>
-<div>
-<h6 class="text-[10px] font-label text-tertiary uppercase font-bold tracking-[0.2em] mb-3">Alcedinidae</h6>
-<h3 class="text-xl font-bold text-on-background mb-3 group-hover:text-primary transition-colors">蓝翡翠</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed line-clamp-2 font-body">以其惊艳的亮蓝色羽毛而闻名，是湿地生态系统健康的重要指标物种...</p>
-<div class="mt-6 pt-4 border-t border-outline-variant flex justify-between items-center text-[10px] font-label uppercase tracking-tighter text-on-surface-variant">
-<span>BY @AvianWatcher</span>
-<span>5 HOURS AGO</span>
-</div>
-</div>
-</div>
-<!-- Entry 3 -->
-<div class="group">
-<div class="h-80 relative overflow-hidden mb-6">
-<img alt="Deer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIKPT8PqxK1t7Dd4T2oHteSUfhUMwBQ5tGJhLc1GKUGERCAmSpvxPh6mQa1ZsmCiTo7B_ft6L8drPNv2kKSl2csJr2xG2UM-hl0EjgGFmIwUbf1mIPPwmPBsS61mVhIRWAoYb-Iy3kSkLHXW_WWJctMKDWYtY0X3RWOVolewjHNZOHRjwiNTQIh7b1h4qkEUjL2O_8IhEK9gTaheUv-ZZGkG_ezwSBtEMe_NWWb7g_NPjkDg5Zamv8hBdr6n80QbSz17N9Ke4umF53"/>
-<div class="absolute top-4 right-4 bg-white px-3 py-1 text-[10px] font-label font-bold uppercase text-primary">哺乳纲</div>
-</div>
-<div>
-<h6 class="text-[10px] font-label text-tertiary uppercase font-bold tracking-[0.2em] mb-3">Cervidae</h6>
-<h3 class="text-xl font-bold text-on-background mb-3 group-hover:text-primary transition-colors">马鹿</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed line-clamp-2 font-body">作为森林中体型最大的鹿类之一，它们在塑造森林结构中起着关键作用...</p>
-<div class="mt-6 pt-4 border-t border-outline-variant flex justify-between items-center text-[10px] font-label uppercase tracking-tighter text-on-surface-variant">
-<span>BY @ForestGuard</span>
-<span>YESTERDAY</span>
-</div>
-</div>
-</div>
-</div>
-<div class="mt-20 text-center">
-<button class="bg-transparent text-primary px-16 py-4 rounded-none font-label text-xs font-bold uppercase tracking-[0.3em] archival-border hover:bg-primary hover:text-white transition-all">加载更多档案条目</button>
+<span class="material-symbols-outlined absolute -right-10 -bottom-10 text-[220px] opacity-10" style="font-variation-settings: 'FILL' 1;">hub</span>
 </div>
 </section>
-<!-- Search Archive (moved to bottom) -->
+<!-- Search Archive -->
 <section class="relative py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-low border-t border-outline-variant">
 <div class="max-w-container-max mx-auto relative z-10 text-center">
 <span class="font-label text-xs text-tertiary tracking-widest uppercase mb-3 block font-bold">Archive Search</span>
 <h2 class="text-3xl md:text-4xl font-bold text-on-background mb-8">检索物种档案</h2>
 <div class="relative max-w-3xl mx-auto">
-<input class="w-full h-16 pl-14 pr-32 rounded-none border-none bg-white ring-1 ring-outline-variant focus:ring-2 focus:ring-primary font-body transition-all" placeholder="搜索物种、目、科或生境..." type="text"/>
+<input id="species-search" class="w-full h-16 pl-14 pr-32 rounded-none border-none bg-white ring-1 ring-outline-variant focus:ring-2 focus:ring-primary font-body transition-all" placeholder="搜索物种名、学名或生境…" type="text"/>
 <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-primary text-2xl">search</span>
-<button class="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-on-primary px-8 py-2 rounded-none font-label text-sm uppercase tracking-wider">检索档案</button>
 </div>
 <div class="mt-8 flex flex-wrap justify-center gap-3">
 <span class="font-label text-sm text-on-surface-variant py-2">热门搜索：</span>
-<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">孟加拉虎</a>
-<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">高山杜鹃</a>
-<a class="bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors" href="#">迁徙候鸟</a>
+<a class="search-tag bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors cursor-pointer">蜂虎</a>
+<a class="search-tag bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors cursor-pointer">白鹭</a>
+<a class="search-tag bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors cursor-pointer">水牛</a>
+<a class="search-tag bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors cursor-pointer">罗非鱼</a>
+<a class="search-tag bg-surface-container-highest px-4 py-1 rounded font-label text-xs text-primary hover:bg-primary hover:text-white transition-colors cursor-pointer">江蓠</a>
 </div>
 </div>
 </section>
 </main>
-<!-- Footer -->
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const observerOptions = {
-            threshold: 0.1
-        };
+    const FP = "https://commons.wikimedia.org/wiki/Special:FilePath/";
+    const species = [
+        {cn:"栗喉蜂虎", sci:"Merops philippinus", en:"Blue-tailed Bee-eater", fam:"蜂虎科 Meropidae", tag:"鸟纲",
+         file:"Blue-tailed_bee-eater_(Merops_philippinus).jpg",
+         desc:"海南夏候鸟中最艳丽的一员，喉部栗红、体羽翠绿。常成群在沙质崖壁掘洞筑巢，于空中灵巧追捕蜻蜓、蜜蜂等飞虫。",
+         data:[["分布","沿海沙地 · 农田边"],["食性","空中捕食昆虫"],["居留","夏候鸟"]]},
+        {cn:"苍鹭", sci:"Ardea cinerea", en:"Grey Heron", fam:"鹭科 Ardeidae", tag:"鸟纲",
+         file:"Graureiher_Ardea_cinerea-4883.jpg",
+         desc:"体型高大的灰色涉禽，常单脚伫立于水田、鱼塘边，颈缩成S形静候猎物。以鱼、蛙、甲壳类为食，是湿地健康的指示物种。",
+         data:[["分布","水田 · 鱼塘 · 红树林"],["食性","鱼 · 蛙 · 虾"],["居留","留鸟 / 冬候鸟"]]},
+        {cn:"白鹭（小白鹭）", sci:"Egretta garzetta", en:"Little Egret", fam:"鹭科 Ardeidae", tag:"鸟纲",
+         file:"Egretta_garzetta_(Little_Egret)_Kuntul_kecil.jpg",
+         desc:"通体雪白、黑喙黄趾的小型鹭，繁殖期枕部生出两条飘逸蓑羽。常随水牛与农人活动，啄食被惊起的小鱼小虫。",
+         data:[["分布","稻田 · 滩涂"],["食性","小鱼 · 昆虫"],["习性","集群营巢"]]},
+        {cn:"池鹭", sci:"Ardeola bacchus", en:"Chinese Pond Heron", fam:"鹭科 Ardeidae", tag:"鸟纲",
+         file:"Ardeola_bacchus,_Chinese_pond_heron_-_Kaeng_Krachan_National_Park_(16253453790).jpg",
+         desc:"繁殖期头颈栗红、背披深蓝蓑羽，停立时一身朴素，飞起时雪白双翼骤然展开，宛若“变装”。常于稻田、池塘浅水捕食。",
+         data:[["分布","池塘 · 稻田"],["食性","昆虫 · 鱼虾"],["居留","夏候鸟 / 留鸟"]]},
+        {cn:"家燕", sci:"Hirundo rustica", en:"Barn Swallow", fam:"燕科 Hirundinidae", tag:"鸟纲",
+         file:"Barn_Swallow_Hirundo_rustica,_Nepal.jpg",
+         desc:"蓝黑色背、叉形长尾，喜在农舍屋檐下以泥和草筑碗状巢。终日在田野上空疾飞掠食蚊蝇，是与人类农耕最亲近的益鸟。",
+         data:[["分布","村舍 · 农田"],["食性","飞行昆虫"],["居留","夏候鸟"]]},
+        {cn:"斑节对虾（黑虎虾）", sci:"Penaeus monodon", en:"Giant Tiger Prawn", fam:"对虾科 Penaeidae", tag:"甲壳",
+         file:"Penaeus_monodon.jpg",
+         desc:"体表具黑褐与浅色相间的虎纹斑节，是世界最大的对虾之一，可长达三十余厘米。海南沿海重要养殖与河口物种，幼体依赖红树林与河口育肥。",
+         data:[["分布","河口 · 海水养殖塘"],["食性","杂食底栖"],["价值","重要水产"]]},
+        {cn:"江蓠", sci:"Gracilaria sp.", en:"Gracilaria", fam:"江蓠科 Gracilariaceae", tag:"藻类",
+         file:"Red_algae_(Gracilaria_sp.)_(48737220543).jpg",
+         desc:"暗红至紫褐色的丛生海藻，是提取琼脂（寒天）的主要原料，也是鲍鱼等海产的天然饵料。在海南近岸滩涂广泛分布，兼具固碳与净水功能。",
+         data:[["分布","近岸滩涂"],["用途","琼脂 · 饵料"],["生态","固碳净水"]]},
+        {cn:"滴水观音（海芋）", sci:"Alocasia odora", en:"Giant Taro", fam:"天南星科 Araceae", tag:"植物",
+         file:"Alocasia_odora_(3).JPG",
+         desc:"叶片宽大如盾、湿润时叶尖滴水而得名。喜生于林下沟谷阴湿处，全株含草酸钙针晶，汁液有毒不可误食，常作林缘地被与景观。",
+         data:[["生境","林下 · 沟谷"],["特征","大叶滴水"],["提示","全株有毒"]]},
+        {cn:"苦楝", sci:"Melia azedarach", en:"Chinaberry", fam:"楝科 Meliaceae", tag:"植物",
+         file:"Melia_azedarach_flower.JPG",
+         desc:"海南乡野常见的落叶乔木，春季开淡紫色芳香小花，秋结黄色核果。木材轻软可制家具，叶与果实自古用作天然驱虫剂，是农田林网的乡土树种。",
+         data:[["分布","村旁 · 田边"],["花期","春季淡紫"],["用途","木材 · 驱虫"]]},
+        {cn:"水牛", sci:"Bubalus bubalis", en:"Water Buffalo", fam:"牛科 Bovidae", tag:"哺乳纲",
+         file:"Bubalus_bubalis_(water_buffalo)_bathing_in_a_rust-colored_pond_and_looking_at_viewer,_head_above_water,_Don_Det,_Laos.jpg",
+         desc:"海南传统稻作不可或缺的役畜，喜泡水降温、以粗草为食。耕作与踩踏维持水田结构，粪便回田肥土，是农田生态循环的关键一环。",
+         data:[["用途","耕作役用"],["食性","草食"],["习性","喜水泥浴"]]},
+        {cn:"黑山羊", sci:"Capra hircus", en:"Black Goat", fam:"牛科 Bovidae", tag:"哺乳纲",
+         file:"Black_Bengal_Goat_00812.JPG",
+         desc:"海南本地适应力强的家养山羊，毛色乌黑、体型紧凑，擅在坡地与灌丛间采食杂草嫩枝。是当地重要的肉用畜种，也帮助控制林下杂草。",
+         data:[["用途","肉用"],["食性","灌丛杂草"],["特点","耐热耐粗"]]},
+        {cn:"雷公马（变色树蜥）", sci:"Calotes versicolor", en:"Oriental Garden Lizard", fam:"鬣蜥科 Agamidae", tag:"爬行纲",
+         file:"Oriental_Garden_Lizard_-_Calotes_versicolor.jpg",
+         desc:"海南俗称“雷公马”的树栖蜥蜴，繁殖期雄性头颈转为鲜红。善攀爬捕食昆虫，能随情绪与环境变换体色，是农田与林缘的天然害虫控制者。",
+         data:[["生境","树木 · 灌丛"],["食性","昆虫"],["特征","雄性变红"]]},
+        {cn:"罗非鱼", sci:"Oreochromis sp.", en:"Tilapia", fam:"丽鱼科 Cichlidae", tag:"鱼类",
+         file:"Oreochromis-niloticus-Nairobi.JPG",
+         desc:"原产非洲、现广泛养殖的淡水鱼，适应力极强，耐低氧与咸淡水，亲鱼口孵护幼。海南池塘养殖的主力品种之一；逃逸个体也可能影响本地水域生态。",
+         data:[["分布","池塘 · 河流"],["食性","杂食"],["价值","主要养殖鱼"]]},
+        {cn:"多管藻", sci:"Polysiphonia sp.", en:"Polysiphonia", fam:"松节藻科 Rhodomelaceae", tag:"藻类",
+         file:"Polysiphonia_cystocarp_WM.jpg",
+         desc:"由多列管状细胞组成的丝状红藻，常附生于其他海藻或礁石上。是潮间带的初级生产者与小型海洋生物的栖息微环境，也是研究红藻生活史的经典材料。",
+         data:[["生境","潮间带附生"],["形态","丝状多列"],["角色","初级生产者"]]}
+    ];
 
+    function card(s){
+        const rows = s.data.map(d =>
+            `<div class="flex justify-between border-b border-surface-container pb-1.5">
+                <span class="text-on-surface-variant font-label text-[10px] uppercase tracking-wide">${d[0]}</span>
+                <span class="text-primary font-bold text-xs text-right">${d[1]}</span>
+            </div>`).join("");
+        return `<div class="species-card group flex flex-col bg-white archival-border" data-key="${(s.cn+' '+s.sci+' '+s.en+' '+s.fam).toLowerCase()}">
+            <div class="photo-frame h-64">
+                <div class="photo-fallback"><span class="material-symbols-outlined text-3xl mb-1">photo_camera</span><span class="font-serif text-lg font-bold">${s.cn}</span></div>
+                <img alt="${s.cn} ${s.en}" loading="lazy" class="transition-transform duration-700 group-hover:scale-105" onerror="this.style.display='none'" src="${FP}${encodeURIComponent(s.file)}?width=700"/>
+                <div class="absolute top-4 right-4 z-10 bg-white px-3 py-1 text-[10px] font-label font-bold uppercase text-primary">${s.tag}</div>
+            </div>
+            <div class="p-6 flex flex-col flex-1">
+                <h6 class="text-[10px] font-label text-tertiary uppercase font-bold tracking-[0.2em] mb-2">${s.fam}</h6>
+                <h3 class="text-xl font-bold text-on-background mb-1 group-hover:text-primary transition-colors">${s.cn}</h3>
+                <p class="text-xs italic text-on-surface-variant mb-3">${s.sci} · ${s.en}</p>
+                <p class="text-sm text-on-surface-variant leading-relaxed font-body mb-5">${s.desc}</p>
+                <div class="mt-auto pt-4 border-t border-outline-variant space-y-2">${rows}</div>
+            </div>
+        </div>`;
+    }
+
+    const grid = document.getElementById("species-cards");
+    grid.innerHTML = species.map(card).join("");
+
+    // Search filter
+    const input = document.getElementById("species-search");
+    function applyFilter(q){
+        q = (q||"").trim().toLowerCase();
+        document.querySelectorAll(".species-card").forEach(el => {
+            el.style.display = (!q || el.dataset.key.includes(q)) ? "" : "none";
+        });
+    }
+    input.addEventListener("input", e => applyFilter(e.target.value));
+    document.querySelectorAll(".search-tag").forEach(t =>
+        t.addEventListener("click", () => { input.value = t.textContent; applyFilter(t.textContent);
+            document.getElementById("species-grid").scrollIntoView({behavior:"smooth"}); }));
+
+    // Reveal on scroll
+    document.addEventListener('DOMContentLoaded', () => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -404,8 +400,7 @@
                     entry.target.classList.remove('opacity-0', 'translate-y-10');
                 }
             });
-        }, observerOptions);
-
+        }, { threshold: 0.1 });
         document.querySelectorAll('section').forEach(section => {
             section.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
             observer.observe(section);
