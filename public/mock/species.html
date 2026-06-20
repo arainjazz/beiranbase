@@ -574,4 +574,253 @@
         });
     });
 </script>
+
+<!-- ============ Obsidian-style Ecological Graph ============ -->
+<script>
+(function(){
+  const canvas = document.getElementById('ecoGraph');
+  if (!canvas) return;
+  const tip = document.getElementById('ecoTip');
+  const ctx = canvas.getContext('2d');
+  const COLORS = {
+    bird:'#f59e0b', plant:'#84cc16', algae:'#22d3ee',
+    aqua:'#60a5fa', beast:'#a78bfa', habitat:'#ffffff'
+  };
+
+  // Nodes: species + habitat hubs
+  const N = [
+    // habitats (hubs)
+    {id:'H_海岸',label:'海岸',type:'habitat',r:18},
+    {id:'H_农田',label:'农田·水田',type:'habitat',r:20},
+    {id:'H_林缘',label:'林缘·林荫',type:'habitat',r:18},
+    {id:'H_荒地',label:'荒地·田埂',type:'habitat',r:18},
+    {id:'H_浅海',label:'浅海·河口',type:'habitat',r:18},
+    // birds
+    {id:'栗喉蜂虎',type:'bird'},{id:'苍鹭',type:'bird'},
+    {id:'白鹭',type:'bird'},{id:'池鹭',type:'bird'},{id:'家燕',type:'bird'},
+    // aqua
+    {id:'黑虎虾',type:'aqua'},{id:'罗非鱼',type:'aqua'},
+    // algae
+    {id:'江蓠',type:'algae'},{id:'多管藻',type:'algae'},{id:'麒麟菜',type:'algae'},
+    // beasts/reptiles
+    {id:'水牛',type:'beast'},{id:'黑山羊',type:'beast'},
+    {id:'雷公马',type:'beast'},{id:'海南石龙子',type:'beast'},
+    // plants
+    {id:'苦楝',type:'plant'},{id:'滴水观音',type:'plant'},
+    {id:'木麻黄',type:'plant'},{id:'厚藤',type:'plant'},{id:'苦郎树',type:'plant'},
+    {id:'狗牙根',type:'plant'},{id:'含羞草',type:'plant'},
+    {id:'马樱丹',type:'plant'},{id:'鬼针草',type:'plant'},
+    {id:'龙葵',type:'plant'},{id:'磨盘草',type:'plant'},{id:'鸡屎藤',type:'plant'},
+  ];
+  // Edges: [from, to, kind]  kind: food | habitat | symbiosis
+  const E = [
+    // food chains
+    ['江蓠','黑虎虾','food'],['多管藻','黑虎虾','food'],
+    ['罗非鱼','苍鹭','food'],['罗非鱼','白鹭','food'],['罗非鱼','池鹭','food'],
+    ['栗喉蜂虎','家燕','symbiosis'],
+    ['雷公马','海南石龙子','symbiosis'],
+    // habitat anchors
+    ['栗喉蜂虎','H_农田','habitat'],['家燕','H_农田','habitat'],
+    ['苍鹭','H_农田','habitat'],['白鹭','H_农田','habitat'],['池鹭','H_农田','habitat'],
+    ['水牛','H_农田','habitat'],['罗非鱼','H_农田','habitat'],
+    ['雷公马','H_林缘','habitat'],['海南石龙子','H_林缘','habitat'],
+    ['苦楝','H_林缘','habitat'],['滴水观音','H_林缘','habitat'],
+    ['黑山羊','H_荒地','habitat'],['狗牙根','H_荒地','habitat'],
+    ['含羞草','H_荒地','habitat'],['马樱丹','H_荒地','habitat'],
+    ['鬼针草','H_荒地','habitat'],['龙葵','H_荒地','habitat'],
+    ['磨盘草','H_荒地','habitat'],['鸡屎藤','H_荒地','habitat'],
+    ['木麻黄','H_海岸','habitat'],['厚藤','H_海岸','habitat'],
+    ['苦郎树','H_海岸','habitat'],
+    ['江蓠','H_浅海','habitat'],['多管藻','H_浅海','habitat'],
+    ['麒麟菜','H_浅海','habitat'],['黑虎虾','H_浅海','habitat'],
+    // cross-habitat bridges
+    ['H_海岸','H_浅海','symbiosis'],['H_农田','H_林缘','symbiosis'],
+    ['H_农田','H_荒地','symbiosis'],['H_林缘','H_荒地','symbiosis'],
+    // pollination/forage
+    ['马樱丹','栗喉蜂虎','symbiosis'],['鬼针草','家燕','symbiosis'],
+    ['鬼针草','海南石龙子','food'],['含羞草','H_农田','symbiosis'],
+  ];
+
+  const nodeById = {};
+  N.forEach(n => {
+    n.r = n.r || (n.type==='habitat'?18:8);
+    nodeById[n.id] = n;
+  });
+  const edges = E.filter(e => nodeById[e[0]] && nodeById[e[1]])
+                 .map(e => ({a:nodeById[e[0]], b:nodeById[e[1]], k:e[2]}));
+  // adjacency for highlighting
+  const adj = {};
+  edges.forEach(e => {
+    (adj[e.a.id] = adj[e.a.id] || new Set()).add(e.b.id);
+    (adj[e.b.id] = adj[e.b.id] || new Set()).add(e.a.id);
+  });
+
+  let W=0,H=0,DPR=Math.max(1,window.devicePixelRatio||1);
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  function seed(){
+    N.forEach((n,i) => {
+      const a = (i/N.length)*Math.PI*2;
+      const R = Math.min(W,H)*0.32;
+      n.x = W/2 + Math.cos(a)*R*(0.6+Math.random()*0.6);
+      n.y = H/2 + Math.sin(a)*R*(0.6+Math.random()*0.6);
+      n.vx = 0; n.vy = 0;
+    });
+  }
+
+  let hoverId = null, dragNode = null, dragOff = {x:0,y:0};
+
+  function step(){
+    // repulsion
+    for (let i=0;i<N.length;i++){
+      const a = N[i];
+      for (let j=i+1;j<N.length;j++){
+        const b = N[j];
+        let dx = b.x-a.x, dy = b.y-a.y;
+        let d2 = dx*dx+dy*dy; if (d2<1) d2=1;
+        const d = Math.sqrt(d2);
+        const f = 2200/d2;
+        const fx = (dx/d)*f, fy = (dy/d)*f;
+        a.vx -= fx; a.vy -= fy;
+        b.vx += fx; b.vy += fy;
+      }
+    }
+    // spring
+    edges.forEach(e => {
+      const a=e.a,b=e.b;
+      const dx=b.x-a.x, dy=b.y-a.y;
+      const d=Math.sqrt(dx*dx+dy*dy)||1;
+      const rest = (a.type==='habitat'||b.type==='habitat')?90:75;
+      const k = 0.012;
+      const f = (d-rest)*k;
+      const fx=(dx/d)*f, fy=(dy/d)*f;
+      a.vx += fx; a.vy += fy;
+      b.vx -= fx; b.vy -= fy;
+    });
+    // gravity to center + damping
+    N.forEach(n => {
+      if (n===dragNode) return;
+      n.vx += (W/2-n.x)*0.0015;
+      n.vy += (H/2-n.y)*0.0015;
+      n.vx *= 0.85; n.vy *= 0.85;
+      n.x += n.vx; n.y += n.vy;
+      const pad = n.r+4;
+      if (n.x<pad){n.x=pad; n.vx*=-0.4;}
+      if (n.x>W-pad){n.x=W-pad; n.vx*=-0.4;}
+      if (n.y<pad){n.y=pad; n.vy*=-0.4;}
+      if (n.y>H-pad){n.y=H-pad; n.vy*=-0.4;}
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // edges
+    edges.forEach(e => {
+      const a=e.a,b=e.b;
+      const lit = hoverId && (hoverId===a.id||hoverId===b.id);
+      ctx.strokeStyle = lit ? 'rgba(255,255,255,0.85)'
+                            : (hoverId ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.22)');
+      ctx.lineWidth = lit ? 1.6 : 1;
+      if (e.k==='food'){ ctx.setLineDash([]); }
+      else if (e.k==='habitat'){ ctx.setLineDash([2,3]); }
+      else { ctx.setLineDash([6,4]); }
+      ctx.beginPath();
+      ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+    // nodes
+    N.forEach(n => {
+      const lit = !hoverId || hoverId===n.id || (adj[hoverId] && adj[hoverId].has(n.id));
+      const color = COLORS[n.type] || '#ffffff';
+      ctx.globalAlpha = lit ? 1 : 0.25;
+      // glow
+      const grd = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*3);
+      grd.addColorStop(0, color+'66');
+      grd.addColorStop(1, color+'00');
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*3,0,Math.PI*2); ctx.fill();
+      // core
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+      ctx.lineWidth = n.type==='habitat'?2:1;
+      ctx.stroke();
+      // label
+      const labelText = n.label || n.id;
+      const isHub = n.type==='habitat';
+      ctx.font = (isHub?'700 ':'500 ') + (isHub?12:11) + 'px ui-sans-serif,system-ui,"PingFang SC","Noto Sans SC",sans-serif';
+      ctx.textAlign='center'; ctx.textBaseline='top';
+      const ty = n.y + n.r + 4;
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      const tw = ctx.measureText(labelText).width;
+      ctx.fillRect(n.x - tw/2 - 4, ty - 1, tw + 8, isHub?16:14);
+      ctx.fillStyle = lit ? '#ffffff' : 'rgba(255,255,255,0.6)';
+      ctx.fillText(labelText, n.x, ty+1);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  function loop(){ step(); draw(); requestAnimationFrame(loop); }
+
+  function hit(px,py){
+    for (let i=N.length-1;i>=0;i--){
+      const n=N[i]; const dx=px-n.x, dy=py-n.y;
+      if (dx*dx+dy*dy <= (n.r+4)*(n.r+4)) return n;
+    }
+    return null;
+  }
+  function evtPos(e){
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - r.left, y: t.clientY - r.top, clientX: t.clientX, clientY: t.clientY };
+  }
+  canvas.addEventListener('mousemove', e => {
+    const p = evtPos(e);
+    if (dragNode){
+      dragNode.x = p.x - dragOff.x; dragNode.y = p.y - dragOff.y;
+      dragNode.vx = dragNode.vy = 0;
+      return;
+    }
+    const n = hit(p.x,p.y);
+    hoverId = n ? n.id : null;
+    canvas.style.cursor = n ? 'grab' : 'default';
+    if (n){
+      tip.textContent = n.label || n.id;
+      tip.style.left = p.x + 'px';
+      tip.style.top  = p.y + 'px';
+      tip.style.opacity = '1';
+    } else {
+      tip.style.opacity = '0';
+    }
+  });
+  canvas.addEventListener('mousedown', e => {
+    const p = evtPos(e); const n = hit(p.x,p.y);
+    if (n){ dragNode = n; dragOff = {x:p.x-n.x, y:p.y-n.y}; canvas.style.cursor='grabbing'; }
+  });
+  window.addEventListener('mouseup', () => { dragNode = null; canvas.style.cursor='default'; });
+  canvas.addEventListener('mouseleave', () => { hoverId=null; tip.style.opacity='0'; });
+  // touch
+  canvas.addEventListener('touchstart', e => {
+    const p = evtPos(e); const n = hit(p.x,p.y);
+    if (n){ dragNode = n; dragOff = {x:p.x-n.x, y:p.y-n.y}; hoverId=n.id; e.preventDefault(); }
+  }, {passive:false});
+  canvas.addEventListener('touchmove', e => {
+    if (!dragNode) return;
+    const p = evtPos(e);
+    dragNode.x = p.x - dragOff.x; dragNode.y = p.y - dragOff.y;
+    dragNode.vx = dragNode.vy = 0;
+    e.preventDefault();
+  }, {passive:false});
+  canvas.addEventListener('touchend', () => { dragNode=null; hoverId=null; });
+
+  document.getElementById('ecoReset').addEventListener('click', seed);
+  window.addEventListener('resize', () => { resize(); });
+
+  resize(); seed(); loop();
+})();
+</script>
 </body></html>
