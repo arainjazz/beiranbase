@@ -276,20 +276,45 @@
 </div>
 <div id="species-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12"></div>
 </section>
-<!-- Ecological Web -->
+<!-- Ecological Web · Obsidian-style Graph -->
 <section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-<div class="bg-primary text-on-primary p-8 md:p-20 relative overflow-hidden">
-<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
-<div class="relative z-10 max-w-3xl">
+<div class="bg-primary text-on-primary p-6 md:p-12 relative overflow-hidden">
+<div class="absolute inset-0 opacity-[0.06] pointer-events-none" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
+<div class="relative z-10">
+<div class="max-w-3xl mb-8">
 <span class="font-label text-xs text-white/70 uppercase tracking-[0.4em] mb-6 block font-bold">Ecological Web · 生命网络</span>
-<h2 class="text-3xl md:text-5xl font-bold text-white mb-8">一片土地，环环相扣</h2>
-<p class="text-lg text-white/90 mb-6 font-body leading-relaxed">这些物种并非孤立存在。海岸的<span class="font-bold underline underline-offset-4 decoration-2">江蓠与多管藻</span>作为初级生产者，养育着<span class="font-bold underline underline-offset-4 decoration-2">黑虎虾</span>等河口生物；水田与池塘里的<span class="font-bold underline underline-offset-4 decoration-2">罗非鱼</span>，又成为<span class="font-bold underline underline-offset-4 decoration-2">苍鹭、白鹭、池鹭</span>的食物。</p>
-<p class="text-lg text-white/90 mb-6 font-body leading-relaxed"><span class="font-bold underline underline-offset-4 decoration-2">蜂虎与家燕</span>在空中清除农田飞虫，<span class="font-bold underline underline-offset-4 decoration-2">雷公马</span>在林缘捕食爬虫害虫；<span class="font-bold underline underline-offset-4 decoration-2">水牛与黑山羊</span>以耕作和采食维持着田地与坡地的结构，粪肥回田滋养草木。</p>
-<p class="text-lg text-white/90 mb-6 font-body leading-relaxed">海岸线上，<span class="font-bold underline underline-offset-4 decoration-2">木麻黄与厚藤</span>固沙防风、缚住流动的沙丘，<span class="font-bold underline underline-offset-4 decoration-2">苦郎树</span>守在红树林缘耐住盐雾；浅海礁盘间，<span class="font-bold underline underline-offset-4 decoration-2">麒麟菜</span>与江蓠一同固碳净水。</p>
-<p class="text-lg text-white/90 mb-6 font-body leading-relaxed">田边荒地里，<span class="font-bold underline underline-offset-4 decoration-2">狗牙根</span>护土、<span class="font-bold underline underline-offset-4 decoration-2">含羞草</span>固氮，<span class="font-bold underline underline-offset-4 decoration-2">马樱丹、鬼针草、龙葵、磨盘草与鸡屎藤</span>开花结实，为蜜蜂、蝴蝶与飞鸟提供蜜源与食物，也供养着<span class="font-bold underline underline-offset-4 decoration-2">海南石龙子</span>等捕虫的爬行动物。</p>
-<p class="text-lg text-white/90 font-body leading-relaxed"><span class="font-bold underline underline-offset-4 decoration-2">苦楝与滴水观音</span>提供荫蔽与栖息，连接起飞鸟、昆虫与土壤——农田、湿地与海岸由此织成一张完整的生命之网。</p>
+<h2 class="text-3xl md:text-5xl font-bold text-white mb-6">一片土地，环环相扣</h2>
+<p class="text-base md:text-lg text-white/85 font-body leading-relaxed">下方是这片土地上的物种共生关系网。每个圆点是一个物种或栖境节点，连线代表食物链、栖息或互利关系——拖动节点可重新排布，悬停可查看关联。<span class="text-white/60">Drag to rearrange · hover to highlight.</span></p>
 </div>
-<span class="material-symbols-outlined absolute -right-10 -bottom-10 text-[220px] opacity-10" style="font-variation-settings: 'FILL' 1;">hub</span>
+
+<!-- Graph canvas + legend -->
+<div class="relative bg-black/30 rounded-sm overflow-hidden" style="aspect-ratio: 16/10; min-height: 420px;">
+  <canvas id="ecoGraph" class="absolute inset-0 w-full h-full cursor-grab" aria-label="物种共生关系网络图"></canvas>
+  <div id="ecoTip" class="absolute pointer-events-none px-3 py-2 rounded-sm bg-white text-primary text-xs font-bold shadow-lg opacity-0 transition-opacity duration-150" style="transform: translate(-50%, calc(-100% - 10px));"></div>
+  <div class="absolute top-3 left-3 z-10 flex flex-wrap gap-2 text-[10px] font-label tracking-wider">
+    <span class="px-2 py-1 bg-black/40 backdrop-blur-sm text-white rounded-sm flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#f59e0b"></span>鸟纲</span>
+    <span class="px-2 py-1 bg-black/40 backdrop-blur-sm text-white rounded-sm flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#84cc16"></span>植物</span>
+    <span class="px-2 py-1 bg-black/40 backdrop-blur-sm text-white rounded-sm flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#22d3ee"></span>藻类</span>
+    <span class="px-2 py-1 bg-black/40 backdrop-blur-sm text-white rounded-sm flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#60a5fa"></span>鱼类/甲壳</span>
+    <span class="px-2 py-1 bg-black/40 backdrop-blur-sm text-white rounded-sm flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#a78bfa"></span>哺乳/爬行</span>
+    <span class="px-2 py-1 bg-black/40 backdrop-blur-sm text-white rounded-sm flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#ffffff"></span>栖境 Habitat</span>
+  </div>
+  <button id="ecoReset" type="button" class="absolute bottom-3 right-3 z-10 px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-[11px] font-label tracking-wider rounded-sm transition-colors">↻ Reshuffle</button>
+</div>
+
+<!-- Narrative beneath the graph -->
+<details class="mt-8 max-w-3xl group">
+  <summary class="cursor-pointer font-label text-xs text-white/70 uppercase tracking-[0.3em] hover:text-white transition-colors select-none">▸ 阅读完整生态叙事 / Read full ecological narrative</summary>
+  <div class="mt-6 space-y-4 text-white/85 font-body leading-relaxed text-base">
+    <p>海岸的<b>江蓠与多管藻</b>作为初级生产者，养育着<b>黑虎虾</b>等河口生物；水田与池塘里的<b>罗非鱼</b>，又成为<b>苍鹭、白鹭、池鹭</b>的食物。</p>
+    <p><b>蜂虎与家燕</b>在空中清除农田飞虫，<b>雷公马</b>在林缘捕食爬虫害虫；<b>水牛与黑山羊</b>以耕作和采食维持着田地与坡地的结构，粪肥回田滋养草木。</p>
+    <p>海岸线上，<b>木麻黄与厚藤</b>固沙防风、缚住流动的沙丘，<b>苦郎树</b>守在红树林缘耐住盐雾；浅海礁盘间，<b>麒麟菜</b>与江蓠一同固碳净水。</p>
+    <p>田边荒地里，<b>狗牙根</b>护土、<b>含羞草</b>固氮，<b>马樱丹、鬼针草、龙葵、磨盘草与鸡屎藤</b>开花结实，为蜜蜂、蝴蝶与飞鸟提供蜜源与食物，也供养着<b>海南石龙子</b>等捕虫的爬行动物。</p>
+    <p><b>苦楝与滴水观音</b>提供荫蔽与栖息，连接起飞鸟、昆虫与土壤——农田、湿地与海岸由此织成一张完整的生命之网。</p>
+  </div>
+</details>
+</div>
+<span class="material-symbols-outlined absolute -right-10 -bottom-10 text-[220px] opacity-[0.08] pointer-events-none" style="font-variation-settings: 'FILL' 1;">hub</span>
 </div>
 </section>
 <!-- Search Archive -->
