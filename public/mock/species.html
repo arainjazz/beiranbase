@@ -437,7 +437,7 @@
         if (s.files.length < 2) return "";
         const t = s.files.map((f,j) =>
             `<button type="button" class="gallery-thumb photo-frame flex-1 h-14${j===0?' is-active':''}" data-idx="${j}" aria-label="查看 ${s.cn} 第 ${j+1} 张">
-                <img alt="" loading="lazy" onerror="this.style.display='none'" src="${FP}${encodeURIComponent(f)}?width=240"/>
+                <img alt="" loading="lazy" onerror="this.style.display='none'" src="${FP}${encodeURIComponent(f)}&width=240"/>
             </button>`).join("");
         return `<div class="gallery-thumbs flex gap-1.5 p-1.5 bg-surface-container-low">${t}</div>`;
     }
@@ -450,7 +450,7 @@
         return `<div class="species-card group flex flex-col bg-white archival-border" data-sp="${sp}" data-key="${(s.cn+' '+s.sci+' '+s.en+' '+s.fam).toLowerCase()}">
             <div class="gallery-main photo-frame h-64 cursor-zoom-in" data-cur="0" role="button" tabindex="0" aria-label="放大查看 ${s.cn} 图片">
                 <div class="photo-fallback"><span class="material-symbols-outlined text-3xl mb-1">photo_camera</span><span class="font-serif text-lg font-bold">${s.cn}</span></div>
-                <img alt="${s.cn} ${s.en}" loading="lazy" class="gallery-main-img transition-transform duration-700 group-hover:scale-105" onerror="this.style.display='none'" src="${FP}${encodeURIComponent(s.files[0])}?width=800"/>
+                <img alt="${s.cn} ${s.en}" loading="lazy" class="gallery-main-img transition-transform duration-700 group-hover:scale-105" onerror="this.style.display='none'" src="${FP}${encodeURIComponent(s.files[0])}&width=800"/>
                 <div class="absolute top-4 right-4 z-10 bg-white px-3 py-1 text-[10px] font-label font-bold uppercase text-primary">${s.tag}</div>
                 <div class="absolute bottom-3 right-3 z-10 bg-black/55 text-white px-2 py-1 flex items-center gap-1 pointer-events-none">
                     <span class="material-symbols-outlined text-sm">zoom_in</span>
@@ -478,7 +478,7 @@
     const lbCap = document.getElementById("lb-cap");
     let lbFiles = [], lbPos = 0, lbMeta = {};
     function lbShow(){
-        lbImg.src = FPq(lbFiles[lbPos]) + "?width=1400";
+        lbImg.src = FPq(lbFiles[lbPos]) + "&width=1400";
         lbCap.innerHTML = `<span class="font-serif font-bold">${lbMeta.cn}</span> · <span class="italic">${lbMeta.sci}</span> &nbsp; <span class="text-white/50">${lbPos+1} / ${lbFiles.length}</span>`;
     }
     function lbOpen(sp, pos){
@@ -503,7 +503,7 @@
         const sp = +card.dataset.sp, s = species[sp];
         const main = card.querySelector(".gallery-main");
         const img = card.querySelector(".gallery-main-img");
-        img.style.display = ""; img.src = FPq(s.files[idx]) + "?width=800";
+        img.style.display = ""; img.src = FPq(s.files[idx]) + "&width=800";
         main.dataset.cur = idx;
         card.querySelector(".gallery-counter").textContent = (idx+1) + "/" + s.files.length;
         card.querySelectorAll(".gallery-thumb").forEach((t,j) => t.classList.toggle("is-active", j === idx));
